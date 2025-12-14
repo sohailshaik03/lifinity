@@ -136,6 +136,14 @@ def render_main_shell(user: dict):
 def main():
     apply_layout()
 
+    # Initialize database tables on first run
+    try:
+        from .models import Base
+        from .db import engine
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        log.warning(f"Database initialization check: {e}")
+
     if not health_check():
         st.error("❌ Database connection FAILED. Check your .env and MySQL.")
         return

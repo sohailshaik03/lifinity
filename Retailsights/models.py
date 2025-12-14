@@ -1,8 +1,16 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Float, Boolean
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Float, Boolean, Table
 from sqlalchemy.orm import relationship, declarative_base
 from datetime import datetime
 
 Base = declarative_base()
+
+# Association table for many-to-many relationship between users and shops
+user_shops = Table(
+    'user_shops',
+    Base.metadata,
+    Column('user_id', Integer, ForeignKey('users.id'), primary_key=True),
+    Column('shop_id', Integer, ForeignKey('shops.id'), primary_key=True)
+)
 
 
 class User(Base):
