@@ -136,11 +136,41 @@ def render_main_shell(user: dict):
 def main():
     apply_layout()
 
-    # Initialize database tables on first run
+    # Initialize database tables and run migrations on first run
     try:
         from .models import Base
         from .db import engine
+        from sqlalchemy import text
+        
+        # Create tables if they don't exist
         Base.metadata.create_all(bind=engine)
+        
+        # Run migration to add is_active column to existing users table
+        try:
+            with engine.connect() as conn:
+                # Check if is_active column exists
+                result = conn.execute(text("""
+                    SELECT column_name 
+                    FROM information_schema.columns 
+                    WHERE table_name='users' AND column_name='is_active'
+                """))
+                
+                if result.fetchone() is None:
+                    # Column doesn't exist, add it
+                    log.info("Adding is_active column to users table...")
+                    conn.execute(text("""
+                        ALTER TABLE users 
+                        ADD COLUMN is_active BOOLEAN DEFAULT TRUE NOT NULL
+                    """))
+                    conn.commit()
+                    
+                    # Update existing users to be active
+                    conn.execute(text("UPDATE users SET is_active = TRUE"))
+                    conn.commit()
+                    log.info("✅ is_active column added successfully")
+        except Exception as migration_error:
+            log.warning(f"Migration check: {migration_error}")
+            
     except Exception as e:
         log.warning(f"Database initialization check: {e}")
 
