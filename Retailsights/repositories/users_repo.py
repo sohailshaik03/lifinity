@@ -24,6 +24,7 @@ def get_user_by_email(email: str) -> Optional[Dict[str, Any]]:
             "full_name": u.full_name,
             "role": u.role,
             "password_hash": u.password_hash,
+            "is_active": u.is_active if hasattr(u, 'is_active') else True,
             "created_at": u.created_at,
         }
     except Exception as e:
@@ -45,7 +46,13 @@ def create_user(
     """
     session = get_session()
     try:
-        u = User(email=email, password_hash=password_hash, full_name=full_name, role=role)
+        u = User(
+            email=email, 
+            password_hash=password_hash, 
+            full_name=full_name, 
+            role=role,
+            is_active=is_active
+        )
         session.add(u)
         session.commit()
         session.refresh(u)
@@ -72,6 +79,7 @@ def list_users() -> list[Dict[str, Any]]:
                 "email": u.email,
                 "full_name": u.full_name,
                 "role": u.role,
+                "is_active": u.is_active if hasattr(u, 'is_active') else True,
                 "created_at": u.created_at,
             })
         return result
