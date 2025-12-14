@@ -46,7 +46,7 @@ class MultiStoreAnalytics:
                     FROM sales_lines sl
                     JOIN sales_transactions sa ON sl.transaction_id = sa.id
                     JOIN products p ON sl.product_id = p.id
-                    WHERE sa.transaction_dt >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                    WHERE sa.transaction_dt >= NOW() - INTERVAL '7 days'
                     GROUP BY p.shop_id
                 ) revenue ON s.id = revenue.shop_id
                 LEFT JOIN (
@@ -56,7 +56,7 @@ class MultiStoreAnalytics:
                         SUM(w.quantity_wasted * COALESCE(p.default_cost, 0)) as total_waste_cost_30d
                     FROM waste_records w
                     JOIN products p ON w.product_id = p.id
-                    WHERE w.recorded_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+                    WHERE w.recorded_at >= NOW() - INTERVAL '30 days'
                     GROUP BY p.shop_id
                 ) waste ON s.id = waste.shop_id
                 LEFT JOIN (
@@ -65,7 +65,7 @@ class MultiStoreAnalytics:
                         COUNT(*) as markdown_count_7d,
                         SUM(discounted_price * quantity_sold) as markdown_revenue_7d
                     FROM markdown_sales
-                    WHERE sold_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                    WHERE sold_at >= NOW() - INTERVAL '7 days'
                     GROUP BY shop_id
                 ) markdown ON s.id = markdown.shop_id
                 GROUP BY s.id, s.name, s.city, s.country, s.created_at, 
@@ -119,8 +119,8 @@ class MultiStoreAnalytics:
                 FROM shops s
                 LEFT JOIN products p ON s.id = p.shop_id
                 LEFT JOIN sales_lines sl ON p.id = sl.product_id
-                LEFT JOIN sales_transactions sa ON sl.transaction_id = sa.id AND sa.transaction_dt >= DATE_SUB(NOW(), INTERVAL %s DAY)
-                LEFT JOIN waste_records w ON p.id = w.product_id AND w.created_at >= DATE_SUB(NOW(), INTERVAL %s DAY)
+                LEFT JOIN sales_transactions sa ON sl.transaction_id = sa.id AND sa.transaction_dt >= NOW() - INTERVAL '%s days'
+                LEFT JOIN waste_records w ON p.id = w.product_id AND w.created_at >= NOW() - INTERVAL '%s days'
                 WHERE s.id IN ({placeholders})
                 GROUP BY s.id, s.name
             """
@@ -169,7 +169,7 @@ class MultiStoreAnalytics:
                     FROM sales_lines sl
                     JOIN sales_transactions sa ON sl.transaction_id = sa.id
                     JOIN products p ON sl.product_id = p.id
-                    WHERE sa.transaction_dt >= DATE_SUB(NOW(), INTERVAL %s DAY)
+                    WHERE sa.transaction_dt >= NOW() - INTERVAL '%s days'
                     GROUP BY p.shop_id
                 ) revenue ON s.id = revenue.shop_id
                 LEFT JOIN (
@@ -178,7 +178,7 @@ class MultiStoreAnalytics:
                         SUM(w.quantity_wasted * p.cost_price) as waste_cost
                     FROM waste_records w
                     JOIN products p ON w.product_id = p.id
-                    WHERE w.created_at >= DATE_SUB(NOW(), INTERVAL %s DAY)
+                    WHERE w.created_at >= NOW() - INTERVAL '%s days'
                     GROUP BY p.shop_id
                 ) waste ON s.id = waste.shop_id
                 WHERE s.city IS NOT NULL AND s.city != ''
@@ -209,7 +209,7 @@ class MultiStoreAnalytics:
                 JOIN sales_lines sl ON sa.id = sl.transaction_id
                 JOIN products p ON sl.product_id = p.id
                 WHERE p.shop_id = %s
-                  AND sa.transaction_dt >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+                  AND sa.transaction_dt >= NOW() - INTERVAL '30 days'
                 GROUP BY DATE(sa.transaction_dt)
                 ORDER BY date DESC
             """
@@ -236,7 +236,7 @@ class MultiStoreAnalytics:
                 FROM waste_records w
                 JOIN products p ON w.product_id = p.id
                 WHERE p.shop_id = %s
-                  AND w.created_at >= DATE_SUB(NOW(), INTERVAL 14 DAY)
+                  AND w.created_at >= NOW() - INTERVAL '14 days'
                 GROUP BY DATE(created_at)
             """
             df_waste = pd.read_sql(query, conn, params=(shop_id,))
@@ -307,9 +307,9 @@ class MultiStoreAnalytics:
                     SUM(w.quantity_wasted) as total_waste_logged
                 FROM users u
                 LEFT JOIN markdown_sales ms ON u.id = ms.sold_by 
-                    AND ms.sold_at >= DATE_SUB(NOW(), INTERVAL %s DAY)
+                    AND ms.sold_at >= NOW() - INTERVAL '%s days'
                 LEFT JOIN waste_records w ON u.id = w.recorded_by 
-                    AND w.created_at >= DATE_SUB(NOW(), INTERVAL %s DAY)
+                    AND w.created_at >= NOW() - INTERVAL '%s days'
                 WHERE u.shop_id = %s
                 GROUP BY u.id, u.username, u.role
                 HAVING markdown_sales_count > 0 OR waste_logged_count > 0

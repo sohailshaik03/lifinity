@@ -94,7 +94,7 @@ def get_alerts_for_shop(shop_id: int, days: int = 30) -> List[Dict[str, Any]]:
             SELECT a.*, p.name as product_name, p.sku
             FROM alert_notifications a
             JOIN products p ON a.product_id = p.id
-            WHERE a.shop_id = %s AND a.created_at >= DATE_SUB(NOW(), INTERVAL %s DAY)
+            WHERE a.shop_id = %s AND a.created_at >= NOW() - INTERVAL '%s days'
             ORDER BY a.created_at DESC
             """,
             (shop_id, days),

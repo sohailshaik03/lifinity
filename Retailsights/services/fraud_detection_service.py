@@ -41,7 +41,7 @@ class FraudDetectionService:
                 FROM users u
                 JOIN markdown_sales ms ON u.id = ms.sold_by
                 WHERE u.shop_id = %s
-                  AND ms.sold_at >= DATE_SUB(NOW(), INTERVAL %s DAY)
+                  AND ms.sold_at >= NOW() - INTERVAL '%s days'
                 GROUP BY u.id, u.username, u.role
                 HAVING max_discount > 70 OR avg_discount > 50
                 ORDER BY total_discount_given DESC
@@ -123,7 +123,7 @@ class FraudDetectionService:
                 JOIN products p ON sh.product_id = p.id
                 WHERE sh.shop_id = %s
                   AND sh.code_type = 'barcode'
-                  AND sh.scanned_at >= DATE_SUB(NOW(), INTERVAL %s DAY)
+                  AND sh.scanned_at >= NOW() - INTERVAL '%s days'
                 GROUP BY sh.code
                 HAVING different_products > 1
                 ORDER BY scan_count DESC
@@ -172,7 +172,7 @@ class FraudDetectionService:
                     SUM(total_amount) as total_value
                 FROM sales
                 WHERE shop_id = %s
-                  AND created_at >= DATE_SUB(NOW(), INTERVAL %s DAY)
+                  AND created_at >= NOW() - INTERVAL '%s days'
                   AND (HOUR(created_at) < 6 OR HOUR(created_at) > 23)
                 GROUP BY DATE(created_at), HOUR(created_at)
                 HAVING transaction_count > 5
@@ -205,7 +205,7 @@ class FraudDetectionService:
                 FROM markdown_sales ms
                 JOIN users u ON ms.sold_by = u.id
                 WHERE ms.shop_id = %s
-                  AND ms.sold_at >= DATE_SUB(NOW(), INTERVAL %s DAY)
+                  AND ms.sold_at >= NOW() - INTERVAL '%s days'
                 GROUP BY ms.sold_by, u.username
                 HAVING purchase_count > 20 AND avg_discount > 40
                 ORDER BY purchase_count DESC
@@ -289,7 +289,7 @@ class FraudDetectionService:
         """
         conn = get_connection()
         try:
-            conditions = ["ms.sold_at >= DATE_SUB(NOW(), INTERVAL %s DAY)"]
+            conditions = ["ms.sold_at >= NOW() - INTERVAL '%s days'"]
             params = [days]
             
             if transaction_id:

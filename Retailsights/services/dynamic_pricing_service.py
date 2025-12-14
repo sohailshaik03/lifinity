@@ -148,7 +148,7 @@ class DynamicPricingService:
                 FROM sales_lines sl
                 JOIN sales s ON sl.sale_id = s.id
                 WHERE sl.product_id = %s
-                  AND s.created_at >= DATE_SUB(NOW(), INTERVAL %s DAY)
+                  AND s.created_at >= NOW() - INTERVAL '%s days'
             """
             cur = conn.cursor(dictionary=True)
             cur.execute(query, (product_id, days))

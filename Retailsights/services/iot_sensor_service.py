@@ -250,7 +250,7 @@ class IoTSensorService:
                     door_open
                 FROM sensor_readings
                 WHERE sensor_id = %s
-                  AND recorded_at >= DATE_SUB(NOW(), INTERVAL %s HOUR)
+                  AND recorded_at >= NOW() - INTERVAL '%s hours'
                 ORDER BY recorded_at ASC
             """, (sensor_id, hours))
             
@@ -285,8 +285,8 @@ class IoTSensorService:
                 JOIN sensor_readings sr ON s.sensor_id = sr.sensor_id
                 WHERE s.shop_id = %s
                   AND sa.alert_type IN ('TEMP_TOO_HIGH', 'TEMP_TOO_LOW')
-                  AND sa.triggered_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
-                  AND sr.recorded_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+                  AND sa.triggered_at >= NOW() - INTERVAL '24 hours'
+                  AND sr.recorded_at >= NOW() - INTERVAL '24 hours'
                 GROUP BY s.sensor_id, s.location, s.zone_type
                 HAVING violation_count > 0
             """, (shop_id,))

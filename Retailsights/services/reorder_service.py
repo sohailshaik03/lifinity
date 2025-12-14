@@ -43,7 +43,7 @@ class ReorderService:
                 FROM products p
                 LEFT JOIN sales_lines sl ON p.id = sl.product_id
                 LEFT JOIN sales s ON sl.sale_id = s.id 
-                    AND s.created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+                    AND s.created_at >= NOW() - INTERVAL '30 days'
                 LEFT JOIN expiry_records e ON p.id = e.product_id 
                     AND e.status = 'active'
                 WHERE p.id = %s
@@ -218,7 +218,7 @@ class ReorderService:
                 JOIN products p ON w.product_id = p.id
                 LEFT JOIN expiry_records e ON w.expiry_record_id = e.id
                 WHERE p.shop_id = %s
-                  AND w.created_at >= DATE_SUB(NOW(), INTERVAL %s DAY)
+                  AND w.created_at >= NOW() - INTERVAL '%s days'
                 GROUP BY p.category
                 ORDER BY waste_cost DESC
             """, (shop_id, days))

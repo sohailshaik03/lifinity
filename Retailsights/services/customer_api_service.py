@@ -204,7 +204,7 @@ class CustomerAPIService:
                     SUM(ms.discounted_price * ms.quantity_sold) as total_spent
                 FROM markdown_sales ms
                 WHERE ms.sold_by = %s
-                  AND ms.sold_at >= DATE_SUB(NOW(), INTERVAL %s DAY)
+                  AND ms.sold_at >= NOW() - INTERVAL '%s days'
             """
             
             cur = conn.cursor(dictionary=True)

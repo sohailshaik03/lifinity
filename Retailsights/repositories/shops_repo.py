@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 import streamlit as st
+from sqlalchemy import text
 
 from ..db_orm import get_session
 from ..logger import log
@@ -144,7 +145,7 @@ class ShopsRepository:
         try:
             rows = (
                 session.execute(
-                    "SELECT DISTINCT s.id, s.name, s.address, s.city, s.country, s.created_at FROM shops s JOIN user_shops us ON us.shop_id = s.id WHERE us.user_id = :uid ORDER BY s.name",
+                    text("SELECT DISTINCT s.id, s.name, s.address, s.city, s.country, s.created_at FROM shops s JOIN user_shops us ON us.shop_id = s.id WHERE us.user_id = :uid ORDER BY s.name"),
                     {"uid": user_id},
                 )
                 .mappings()
@@ -162,7 +163,7 @@ class ShopsRepository:
         session = get_session()
         try:
             session.execute(
-                "INSERT INTO user_shops (user_id, shop_id) VALUES (:uid, :sid) ON CONFLICT DO NOTHING",
+                text("INSERT INTO user_shops (user_id, shop_id) VALUES (:uid, :sid) ON CONFLICT DO NOTHING"),
                 {"uid": user_id, "sid": shop_id},
             )
             # Clear cache after user assignment
@@ -182,7 +183,7 @@ class ShopsRepository:
         session = get_session()
         try:
             session.execute(
-                "DELETE FROM user_shops WHERE user_id = :uid AND shop_id = :sid",
+                text("DELETE FROM user_shops WHERE user_id = :uid AND shop_id = :sid"),
                 {"uid": user_id, "sid": shop_id},
             )
             session.commit()

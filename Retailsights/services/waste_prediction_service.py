@@ -50,7 +50,7 @@ class WastePredictionService:
                 JOIN products p ON w.product_id = p.id
                 LEFT JOIN expiry_records e ON w.expiry_record_id = e.id
                 WHERE p.shop_id = %s 
-                  AND w.created_at >= DATE_SUB(NOW(), INTERVAL %s DAY)
+                  AND w.created_at >= NOW() - INTERVAL '%s days'
                 ORDER BY w.created_at DESC
             """
             df = pd.read_sql(query, conn, params=(shop_id, days))
@@ -81,7 +81,7 @@ class WastePredictionService:
                 LEFT JOIN sales_lines sl ON p.id = sl.product_id
                 LEFT JOIN sales s ON sl.sale_id = s.id
                 WHERE p.shop_id = %s
-                  AND (s.created_at IS NULL OR s.created_at >= DATE_SUB(NOW(), INTERVAL %s DAY))
+                  AND (s.created_at IS NULL OR s.created_at >= NOW() - INTERVAL '%s days')
                 GROUP BY p.id, p.sku, p.name, p.category
             """
             df = pd.read_sql(query, conn, params=(shop_id, days))
@@ -239,7 +239,7 @@ class WastePredictionService:
                 JOIN expiry_records e ON p.id = e.product_id
                 LEFT JOIN waste_records w ON e.id = w.expiry_record_id
                 WHERE p.shop_id = %s
-                  AND e.created_at >= DATE_SUB(NOW(), INTERVAL 90 DAY)
+                  AND e.created_at >= NOW() - INTERVAL '90 days'
                 GROUP BY p.id, p.sku, p.name, p.category, p.cost_price
                 HAVING waste_rate > %s
                 ORDER BY waste_rate DESC, total_waste_cost DESC
@@ -323,7 +323,7 @@ class WastePredictionService:
                 JOIN products p ON w.product_id = p.id
                 LEFT JOIN expiry_records e ON w.expiry_record_id = e.id
                 WHERE p.shop_id = %s
-                  AND w.created_at >= DATE_SUB(NOW(), INTERVAL %s DAY)
+                  AND w.created_at >= NOW() - INTERVAL '%s days'
                 GROUP BY p.category
                 ORDER BY total_waste_cost DESC
             """

@@ -30,7 +30,7 @@ class DiscountReportService:
                 JOIN sales_transactions st ON sl.transaction_id = st.id
                 LEFT JOIN expiry_records er ON sl.product_id = er.product_id
                 WHERE st.shop_id = %s
-                    AND st.transaction_dt >= DATE_SUB(NOW(), INTERVAL %s DAY)
+                    AND st.transaction_dt >= NOW() - INTERVAL '%s days'
                     AND sl.unit_price < p.selling_price
                 ORDER BY st.transaction_dt DESC
                 """,
@@ -113,7 +113,7 @@ class DiscountReportService:
                     SUM(er.quantity_remaining) as total_remaining_qty
                 FROM expiry_records er
                 JOIN products p ON er.product_id = p.id
-                WHERE p.shop_id = %s AND er.created_at >= DATE_SUB(NOW(), INTERVAL %s DAY)
+                WHERE p.shop_id = %s AND er.created_at >= NOW() - INTERVAL '%s days'
                 """,
                 (shop_id, days),
             )
@@ -127,7 +127,7 @@ class DiscountReportService:
                     COUNT(DISTINCT product_id) as unique_products_wasted
                 FROM waste_records wr
                 JOIN products p ON wr.product_id = p.id
-                WHERE p.shop_id = %s AND wr.recorded_at >= DATE_SUB(NOW(), INTERVAL %s DAY)
+                WHERE p.shop_id = %s AND wr.recorded_at >= NOW() - INTERVAL '%s days'
                 """,
                 (shop_id, days),
             )
