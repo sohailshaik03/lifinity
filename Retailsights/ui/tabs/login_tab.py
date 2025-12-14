@@ -4,6 +4,7 @@ from __future__ import annotations
 import streamlit as st
 
 from ...services.user_service import authenticate_user, register_user
+from ...utils.session_manager import SessionManager
 
 
 def render_login_tab():
@@ -16,6 +17,7 @@ def render_login_tab():
         with st.form("login_form"):
             email = st.text_input("Email", placeholder="you@example.com", key="login_email")
             password = st.text_input("Password", type="password", placeholder="••••••••", key="login_password")
+            remember_me = st.checkbox("Remember me for 30 days", value=False, key="remember_me")
             submitted = st.form_submit_button("Sign in")
 
         if submitted:
@@ -23,9 +25,18 @@ def render_login_tab():
             if not ok:
                 st.error(msg)
             else:
+                # Set session state
                 st.session_state["is_authenticated"] = True
                 st.session_state["auth_user"] = user
-                st.success("Logged in successfully.")
+                
+                # Save to cookies if remember me is checked
+                if remember_me:
+                    session_mgr = SessionManager()
+                    session_mgr.save_session(user, remember_me=True)
+                    st.success("✅ Logged in successfully (session saved for 30 days)")
+                else:
+                    st.success("✅ Logged in successfully")
+                
                 st.rerun()
 
     with tabs[1]:

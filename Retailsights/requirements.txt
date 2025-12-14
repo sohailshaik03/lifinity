@@ -27,3 +27,4 @@ python-dateutil
 openpyxl
 SQLAlchemy>=1.4
 psycopg2-binary
+extra-streamlit-components

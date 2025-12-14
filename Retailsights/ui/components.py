@@ -5,6 +5,8 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
+from ..utils.session_manager import SessionManager
+
 
 def show_top_bar(user: dict | None):
     cols = st.columns([3, 1])
@@ -17,9 +19,15 @@ def show_top_bar(user: dict | None):
 
 def show_logout_button():
     if st.sidebar.button("Logout"):
+        # Clear session state
         for key in list(st.session_state.keys()):
             if key.startswith("auth_") or key in ("user", "is_authenticated"):
                 del st.session_state[key]
+        
+        # Clear cookies
+        session_mgr = SessionManager()
+        session_mgr.clear_session()
+        
         st.rerun()
 
 

@@ -33,6 +33,33 @@ from .ui.tabs.support_tab import render_support_tab
 from .ui.tabs.subscription_tab import render_subscription_tab
 
 
+def initialize_session_state():
+    """Initialize session state variables to prevent loss on refresh."""
+    if "is_authenticated" not in st.session_state:
+        st.session_state["is_authenticated"] = False
+    if "auth_user" not in st.session_state:
+        st.session_state["auth_user"] = None
+    if "current_shop" not in st.session_state:
+        st.session_state["current_shop"] = None
+    
+    # Try to restore session from cookies (auto-login)
+    if not st.session_state.get("is_authenticated"):
+        try:
+            from .utils.session_manager import SessionManager
+            session_mgr = SessionManager()
+            
+            # Check if valid session exists in cookies
+            if session_mgr.is_session_valid():
+                user = session_mgr.load_session()
+                if user:
+                    st.session_state["is_authenticated"] = True
+                    st.session_state["auth_user"] = user
+                    log.info(f"Auto-login successful for user: {user.get('email')}")
+        except Exception as e:
+            log.warning(f"Auto-login failed: {e}")
+            pass  # Silently fail, user can login manually
+
+
 def render_main_shell(user: dict):
     st.sidebar.title("📍 Navigation")
 
@@ -133,7 +160,20 @@ def render_main_shell(user: dict):
         st.info("This module will be added in the next steps of the build.")
 
 
+def initialize_session_state():
+    """Initialize session state variables to prevent loss on refresh."""
+    if "is_authenticated" not in st.session_state:
+        st.session_state["is_authenticated"] = False
+    if "auth_user" not in st.session_state:
+        st.session_state["auth_user"] = None
+    if "current_shop" not in st.session_state:
+        st.session_state["current_shop"] = None
+
+
 def main():
+    # Initialize session state FIRST to prevent loss on refresh
+    initialize_session_state()
+    
     apply_layout()
 
     # Initialize database tables and run migrations on first run
@@ -178,8 +218,14 @@ def main():
         st.error("❌ Database connection FAILED. Check your .env and MySQL.")
         return
 
+    # Get authentication state
     user = st.session_state.get("auth_user")
     is_auth = st.session_state.get("is_authenticated", False)
+    
+    # Add debug info (remove in production)
+    # with st.sidebar.expander("🔧 Debug Session", expanded=False):
+    #     st.write("Is Authenticated:", is_auth)
+    #     st.write("User Data:", user)
 
     if not is_auth or not user:
         st.sidebar.title("RetailSight")

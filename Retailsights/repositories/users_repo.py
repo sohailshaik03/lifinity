@@ -34,6 +34,31 @@ def get_user_by_email(email: str) -> Optional[Dict[str, Any]]:
         session.close()
 
 
+def get_user_by_id(user_id: int) -> Optional[Dict[str, Any]]:
+    """
+    Fetch an active user by ID.
+    """
+    session = get_session()
+    try:
+        u = session.query(User).filter(User.id == user_id).one_or_none()
+        if not u:
+            return None
+        return {
+            "id": u.id,
+            "email": u.email,
+            "full_name": u.full_name,
+            "role": u.role,
+            "password_hash": u.password_hash,
+            "is_active": u.is_active if hasattr(u, 'is_active') else True,
+            "created_at": u.created_at,
+        }
+    except Exception as e:
+        logger.error(f"get_user_by_id error: {e}")
+        return None
+    finally:
+        session.close()
+
+
 def create_user(
     email: str,
     full_name: str,
