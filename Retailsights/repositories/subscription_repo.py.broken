@@ -1,0 +1,272 @@
+# repositories/subscription_repo.py
+"""
+Subscription Repository - Database operations for subscription management
+"""
+from typing import Optional, Dict, Any, List
+from datetime import datetime, timedelta
+from db import get_connection
+from logger import log
+
+
+class SubscriptionRepo:
+    """Handle all subscription-related database operations"""
+    
+    @staticmethod
+    def get_user_subscription(user_id: int) -> Optional[Dict[str, Any]]:
+        """Get active subscription for a user"""
+        conn = get_connection()
+        cur = conn.cursor(dictionary=True)
+        try:
+            cur.execute("""
+                SELECT 
+                    us.id,
+                    us.user_id,
+                    us.plan_id,
+                    us.status,
+                    us.start_date,
+                    us.end_date,
+                    us.trial_ends_at,
+                    us.auto_renew,
+                    us.payment_method,
+                    us.next_billing_date,
+                    sp.tier,
+                    sp.name as plan_name,
+                    sp.price_monthly,
+                    sp.max_file_size_mb,
+                    sp.max_rows_per_file,
+                    sp.max_files_per_upload
+                FROM user_subscriptions us
+                JOIN subscription_plans sp ON us.plan_id = sp.id
+                WHERE us.user_id = %s
+                ORDER BY us.created_at DESC
+                LIMIT 1
+            """, (user_id,))
+            return cur.fetchone()
+        except Exception as e:
+            log.error(f"Error getting user subscription: {e}")
+            return None
+        finally:
+            cur.close()
+            conn.close()
+                sp.price,
+                sp.max_file_size_mb,
+                sp.max_rows,
+                sp.max_columns,
+                sp.allowed_file_types,
+                sp.allowed_analysis_types,
+                sp.features
+            FROM user_subscriptions us
+            JOIN subscription_plans sp ON us.plan_id = sp.id
+            WHERE us.user_id = %s 
+                AND us.status = 'active'
+                AND (us.end_date IS NULL OR us.end_date > NOW())
+            ORDER BY us.created_at DESC
+            LIMIT 1
+        """
+        return fetch_one(query, (user_id,))
+    
+    @staticmethod
+    def get_user_tier(user_id: int) -> str:
+        """Get user's subscription tier (returns 'basic' if no active subscription)"""
+        subscription = SubscriptionRepository.get_user_subscription(user_id)
+        return subscription['tier'] if subscription else 'basic'
+    
+    @staticmethod
+    def create_subscription(
+        user_id: int,
+        plan_tier: str,
+        trial_days: int = 0
+    ) -> Optional[int]:
+        """Create a new subscription for a user"""
+        # Get plan ID
+        plan_query = "SELECT id FROM subscription_plans WHERE tier = %s AND is_active = TRUE"
+        plan = fetch_one(plan_query, (plan_tier,))
+        
+        if not plan:
+            return None
+        
+        # Calculate dates
+        start_date = datetime.now()
+        trial_ends_at = start_date + timedelta(days=trial_days) if trial_days > 0 else None
+        next_billing_date = trial_ends_at if trial_ends_at else start_date + timedelta(days=30)
+        
+        query = """
+            INSERT INTO user_subscriptions 
+                (user_id, plan_id, status, start_date, trial_ends_at, next_billing_date)
+            VALUES (%s, %s, 'active', %s, %s, %s)
+        """
+        
+        return execute_query(
+            query,
+            (user_id, plan['id'], start_date, trial_ends_at, next_billing_date)
+        )
+    
+    @staticmethod
+    def upgrade_subscription(user_id: int, new_tier: str) -> bool:
+        """Upgrade user to a new tier"""
+        # Deactivate current subscription
+        execute_query(
+            "UPDATE user_subscriptions SET status = 'upgraded', end_date = NOW() WHERE user_id = %s AND status = 'active'",
+            (user_id,)
+        )
+        
+        # Create new subscription
+        return SubscriptionRepository.create_subscription(user_id, new_tier) is not None
+    
+    @staticmethod
+    def track_feature_usage(user_id: int, feature_name: str, metadata: Dict = None) -> int:
+        """Track feature usage for analytics"""
+        query = """
+            INSERT INTO feature_usage (user_id, feature_name, metadata, last_used_at)
+            VALUES (%s, %s, %s, NOW())
+            ON DUPLICATE KEY UPDATE 
+                usage_count = usage_count + 1,
+                last_used_at = NOW(),
+                metadata = VALUES(metadata)
+        """
+        return execute_query(query, (user_id, feature_name, str(metadata) if metadata else None))
+    
+    @staticmethod
+    def log_file_upload(
+        user_id: int,
+        shop_id: Optional[int],
+        filename: str,
+        file_type: str,
+        detected_type: str,
+        file_size_mb: float,
+        row_count: int,
+        column_count: int,
+        quality_score: float
+    ) -> int:
+        """Log a file upload"""
+        query = """
+            INSERT INTO file_uploads 
+                (user_id, shop_id, filename, file_type, detected_type, 
+                 file_size_mb, row_count, column_count, quality_score, processing_status)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'processing')
+        """
+        return execute_query(
+            query,
+            (user_id, shop_id, filename, file_type, detected_type, 
+             file_size_mb, row_count, column_count, quality_score)
+        )
+    
+    @staticmethod
+    def update_file_processing(
+        file_id: int,
+        status: str,
+        processing_time: float,
+        error_message: str = None
+    ):
+        """Update file processing status"""
+        query = """
+            UPDATE file_uploads 
+            SET processing_status = %s,
+                processing_time_seconds = %s,
+                error_message = %s,
+                processed_at = NOW()
+            WHERE id = %s
+        """
+        execute_query(query, (status, processing_time, error_message, file_id))
+    
+    @staticmethod
+    def log_analysis(
+        user_id: int,
+        file_upload_id: int,
+        analysis_type: str,
+        parameters: Dict,
+        results: Dict,
+        execution_time: float,
+        tier_used: str
+    ) -> int:
+        """Log an analysis execution"""
+        query = """
+            INSERT INTO analysis_history 
+                (user_id, file_upload_id, analysis_type, parameters, results, 
+                 execution_time_seconds, tier_used)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """
+        return execute_query(
+            query,
+            (user_id, file_upload_id, analysis_type, str(parameters), 
+             str(results), execution_time, tier_used)
+        )
+    
+    @staticmethod
+    def get_usage_stats(user_id: int, days: int = 30) -> Dict[str, Any]:
+        """Get usage statistics for a user"""
+        date_from = datetime.now() - timedelta(days=days)
+        
+        # File uploads
+        uploads_query = """
+            SELECT COUNT(*) as count, SUM(file_size_mb) as total_mb
+            FROM file_uploads
+            WHERE user_id = %s AND uploaded_at >= %s
+        """
+        uploads = fetch_one(uploads_query, (user_id, date_from))
+        
+        # Analyses
+        analyses_query = """
+            SELECT COUNT(*) as count, AVG(execution_time_seconds) as avg_time
+            FROM analysis_history
+            WHERE user_id = %s AND created_at >= %s
+        """
+        analyses = fetch_one(analyses_query, (user_id, date_from))
+        
+        # Feature usage
+        features_query = """
+            SELECT feature_name, SUM(usage_count) as count
+            FROM feature_usage
+            WHERE user_id = %s AND last_used_at >= %s
+            GROUP BY feature_name
+            ORDER BY count DESC
+            LIMIT 10
+        """
+        features = fetch_all(features_query, (user_id, date_from))
+        
+        return {
+            "files_uploaded": uploads['count'] if uploads else 0,
+            "total_data_mb": float(uploads['total_mb']) if uploads and uploads['total_mb'] else 0,
+            "analyses_run": analyses['count'] if analyses else 0,
+            "avg_analysis_time": float(analyses['avg_time']) if analyses and analyses['avg_time'] else 0,
+            "top_features": [{"feature": f['feature_name'], "count": f['count']} for f in features] if features else []
+        }
+    
+    @staticmethod
+    def create_upgrade_request(
+        user_id: int,
+        current_tier: str,
+        requested_tier: str,
+        reason: str,
+        contact_email: str = None,
+        company_name: str = None
+    ) -> int:
+        """Create an upgrade request for sales team follow-up"""
+        query = """
+            INSERT INTO upgrade_requests 
+                (user_id, current_tier, requested_tier, reason, contact_email, company_name)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        return execute_query(
+            query,
+            (user_id, current_tier, requested_tier, reason, contact_email, company_name)
+        )
+    
+    @staticmethod
+    def get_plan_features(tier: str) -> Optional[Dict[str, Any]]:
+        """Get features for a specific plan tier"""
+        query = """
+            SELECT * FROM subscription_plans 
+            WHERE tier = %s AND is_active = TRUE
+        """
+        return fetch_one(query, (tier,))
+    
+    @staticmethod
+    def get_all_plans() -> List[Dict[str, Any]]:
+        """Get all active subscription plans"""
+        query = """
+            SELECT * FROM subscription_plans 
+            WHERE is_active = TRUE
+            ORDER BY price ASC
+        """
+        return fetch_all(query)

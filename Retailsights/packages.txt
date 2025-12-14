@@ -1,0 +1,9 @@
+# System packages required for deployment
+# Streamlit Cloud will install these automatically
+
+# For opencv-python-headless
+libgl1-mesa-glx
+libglib2.0-0
+
+# For zbar (barcode scanning)
+libzbar0

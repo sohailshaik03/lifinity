@@ -1,0 +1,42 @@
+# Streamlit Production Configuration
+# This file optimizes the app for 50-100 concurrent users
+
+[server]
+# Port configuration (Streamlit Cloud will override this)
+port = 8501
+# Enable CORS and XSS protection
+enableCORS = true
+enableXsrfProtection = true
+# Max upload size (200MB for large files)
+maxUploadSize = 200
+# Headless mode for production
+headless = true
+# Run on all network interfaces
+address = "0.0.0.0"
+
+[browser]
+# Disable server address display
+serverAddress = "localhost"
+# Don't try to open browser automatically
+gatherUsageStats = false
+serverPort = 8501
+
+[runner]
+# Faster script execution
+magicEnabled = true
+# Faster widget state updates
+fastReruns = true
+
+[client]
+# Hide toolbar in production
+toolbarMode = "minimal"
+# Show less verbose error messages
+showErrorDetails = false
+
+[theme]
+# Optional: Customize theme
+primaryColor = "#FF4B4B"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F0F2F6"
+textColor = "#262730"
+font = "sans serif"

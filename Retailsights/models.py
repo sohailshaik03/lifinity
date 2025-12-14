@@ -1,0 +1,105 @@
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Float, Boolean
+from sqlalchemy.orm import relationship, declarative_base
+from datetime import datetime
+
+Base = declarative_base()
+
+
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True)
+    email = Column(String(255), unique=True, nullable=False)
+    password_hash = Column(String(255), nullable=False)
+    full_name = Column(String(255))
+    role = Column(String(50), default="user")
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class Shop(Base):
+    __tablename__ = "shops"
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False)
+    address = Column(Text)
+    city = Column(String(100))
+    country = Column(String(100))
+    created_at = Column(DateTime, default=datetime.utcnow)
+    owner_user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    owner = relationship("User", backref="shops")
+
+
+class Product(Base):
+    __tablename__ = "products"
+    id = Column(Integer, primary_key=True)
+    shop_id = Column(Integer, ForeignKey("shops.id"), nullable=False)
+    name = Column(String(255), nullable=False)
+    sku = Column(String(100))
+    default_cost = Column(Float, default=0.0)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    shop = relationship("Shop", backref="products")
+
+
+class SalesTransaction(Base):
+    __tablename__ = "sales_transactions"
+    id = Column(Integer, primary_key=True)
+    shop_id = Column(Integer, ForeignKey("shops.id"), nullable=False)
+    transaction_dt = Column(DateTime, default=datetime.utcnow)
+    total_amount = Column(Float, default=0.0)
+    shop = relationship("Shop", backref="sales_transactions")
+
+
+class SalesLine(Base):
+    __tablename__ = "sales_lines"
+    id = Column(Integer, primary_key=True)
+    transaction_id = Column(Integer, ForeignKey("sales_transactions.id"), nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    quantity = Column(Float, default=0.0)
+    unit_price = Column(Float, default=0.0)
+    product = relationship("Product", backref="sales_lines")
+    transaction = relationship("SalesTransaction", backref="lines")
+
+
+class WasteRecord(Base):
+    __tablename__ = "waste_records"
+    id = Column(Integer, primary_key=True)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    expiry_record_id = Column(Integer, ForeignKey("expiry_records.id"), nullable=True)
+    quantity_wasted = Column(Float, default=0.0)
+    reason = Column(String(255), nullable=True)
+    recorded_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    recorded_at = Column(DateTime, default=datetime.utcnow)
+    product = relationship("Product", backref="waste_records")
+
+
+class MarkdownSale(Base):
+    __tablename__ = "markdown_sales"
+    id = Column(Integer, primary_key=True)
+    shop_id = Column(Integer, ForeignKey("shops.id"), nullable=False)
+    sold_at = Column(DateTime, default=datetime.utcnow)
+    # Extended fields for compatibility with existing codepaths
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=True)
+    sku = Column(String(100), nullable=True)
+    original_price = Column(Float, nullable=True)
+    discounted_price = Column(Float, default=0.0)
+    quantity_sold = Column(Integer, default=0)
+    discount_percent = Column(Float, nullable=True)
+    discount_amount = Column(Float, nullable=True)
+    rule_id = Column(Integer, nullable=True)
+    rule_name = Column(String(255), nullable=True)
+    expiry_record_id = Column(Integer, ForeignKey("expiry_records.id"), nullable=True)
+    sold_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    shop = relationship("Shop", backref="markdown_sales")
+
+
+class ExpiryRecord(Base):
+    __tablename__ = "expiry_records"
+    id = Column(Integer, primary_key=True)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    batch_number = Column(String(100), nullable=True)
+    quantity_received = Column(Integer, nullable=True)
+    quantity_remaining = Column(Integer, nullable=True)
+    expiry_date = Column(DateTime, nullable=True)
+    received_date = Column(DateTime, nullable=True)
+    days_left = Column(Integer, nullable=True)
+    status = Column(String(32), default="active")
+    created_at = Column(DateTime, default=datetime.utcnow)
+    product = relationship("Product", backref="expiry_records")

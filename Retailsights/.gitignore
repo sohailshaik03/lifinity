@@ -1,0 +1,107 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Streamlit secrets - NEVER commit these!
+.streamlit/secrets.toml
+secrets.toml
+
+# Logs
+logs/
+*.log
+retailsight.log
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Reports
+reports/*.pdf
+reports/*.xlsx
+reports/*.csv
+
+# Uploaded files
+uploads/
+temp/
+tmp/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Test files
+test_*.py
+*_test.py
+tests/__pycache__/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+
+# Large test data files
+*.csv
+!requirements.txt
+large_*.csv
+test_data*.csv
+
+# Backup files
+*.backup
+*.bak
+*.old
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Stripe keys (security)
+stripe_keys.txt
+
+# Temporary Python files
+tempCodeRunnerFile.py
