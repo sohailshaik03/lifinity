@@ -43,9 +43,11 @@ def initialize_session_state():
         st.session_state["current_shop"] = None
     
     # Try to restore session from cookies (auto-login)
-    if not st.session_state.get("is_authenticated"):
+    # Only run once per session to avoid multiple attempts
+    if not st.session_state.get("is_authenticated") and not st.session_state.get("_auto_login_attempted"):
+        st.session_state["_auto_login_attempted"] = True
         try:
-            from .utils.session_manager import SessionManager
+            from Retailsights.utils.session_manager import SessionManager
             session_mgr = SessionManager()
             
             # Check if valid session exists in cookies
@@ -54,10 +56,13 @@ def initialize_session_state():
                 if user:
                     st.session_state["is_authenticated"] = True
                     st.session_state["auth_user"] = user
+                    from Retailsights.logger import log
                     log.info(f"Auto-login successful for user: {user.get('email')}")
         except Exception as e:
+            from Retailsights.logger import log
             log.warning(f"Auto-login failed: {e}")
-            pass  # Silently fail, user can login manually
+            import traceback
+            traceback.print_exc()
 
 
 def render_main_shell(user: dict):

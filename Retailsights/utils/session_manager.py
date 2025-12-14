@@ -8,9 +8,13 @@ import hashlib
 import secrets
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
-import extra_streamlit_components as stx
+import streamlit as st
 
-from ..repositories.users_repo import get_user_by_id
+try:
+    import extra_streamlit_components as stx
+    COOKIES_AVAILABLE = True
+except ImportError:
+    COOKIES_AVAILABLE = False
 
 
 class SessionManager:
@@ -21,7 +25,10 @@ class SessionManager:
     
     def __init__(self):
         """Initialize cookie manager"""
-        self.cookie_manager = stx.CookieManager()
+        if COOKIES_AVAILABLE:
+            self.cookie_manager = stx.CookieManager(key="session_cookie_manager")
+        else:
+            self.cookie_manager = None
     
     @staticmethod
     def generate_session_token(user_id: int) -> str:
@@ -33,7 +40,7 @@ class SessionManager:
     
     def save_session(self, user: Dict[str, Any], remember_me: bool = False):
         """Save user session to cookies if remember_me is True"""
-        if not remember_me:
+        if not remember_me or not self.cookie_manager:
             return
         
         try:
@@ -46,29 +53,58 @@ class SessionManager:
             
             # Calculate expiry
             expiry_days = self.COOKIE_EXPIRY_DAYS if remember_me else 1
+            expiry = datetime.now() + timedelta(days=expiry_days)
             
-            # Save to cookies
+            # Save to cookies with key
             self.cookie_manager.set(
                 "auth_token", 
                 token,
-                expires_at=datetime.now() + timedelta(days=expiry_days)
+                expires_at=expiry,
+                key="auth_token_cookie"
             )
             self.cookie_manager.set(
                 "user_id",
                 str(user_id),
-                expires_at=datetime.now() + timedelta(days=expiry_days)
+                expires_at=expiry,
+                key="user_id_cookie"
             )
             self.cookie_manager.set(
                 "user_email",
                 user.get("email", ""),
-                expires_at=datetime.now() + timedelta(days=expiry_days)
+                expires_at=expiry,
+                key="user_email_cookie"
             )
+            
+            # Also store in streamlit session state as backup
+            st.session_state["_cookie_user_id"] = str(user_id)
+            st.session_state["_cookie_auth_token"] = token
+            
         except Exception as e:
             # Silently fail - cookies are enhancement, not critical
+            import traceback
+            traceback.print_exc()
             pass
     
     def load_session(self) -> Optional[Dict[str, Any]]:
         """Load user session from cookies"""
+        if not self.cookie_manager:
+            # Try from session state backup
+            user_id_str = st.session_state.get("_cookie_user_id")
+            if user_id_str:
+                try:
+                    from Retailsights.repositories.users_repo import get_user_by_id
+                    user = get_user_by_id(int(user_id_str))
+                    if user and user.get("is_active"):
+                        return {
+                            "id": user["id"],
+                            "email": user["email"],
+                            "full_name": user["full_name"],
+                            "role": user["role"],
+                        }
+                except Exception:
+                    pass
+            return None
+        
         try:
             # Get cookies
             cookies = self.cookie_manager.get_all()
@@ -83,6 +119,7 @@ class SessionManager:
                 return None
             
             # Fetch user from database
+            from Retailsights.repositories.users_repo import get_user_by_id
             user = get_user_by_id(int(user_id))
             
             if not user:
@@ -105,11 +142,21 @@ class SessionManager:
             
         except Exception as e:
             # Silently fail and clear corrupted cookies
+            import traceback
+            traceback.print_exc()
             self.clear_session()
             return None
     
     def clear_session(self):
         """Clear all session cookies"""
+        if not self.cookie_manager:
+            # Clear session state backup
+            if "_cookie_user_id" in st.session_state:
+                del st.session_state["_cookie_user_id"]
+            if "_cookie_auth_token" in st.session_state:
+                del st.session_state["_cookie_auth_token"]
+            return
+            
         try:
             self.cookie_manager.delete("auth_token")
             self.cookie_manager.delete("user_id")
@@ -119,6 +166,10 @@ class SessionManager:
     
     def is_session_valid(self) -> bool:
         """Check if there's a valid session in cookies"""
+        if not self.cookie_manager:
+            # Check session state backup
+            return bool(st.session_state.get("_cookie_user_id"))
+            
         try:
             cookies = self.cookie_manager.get_all()
             return bool(cookies and cookies.get("user_id") and cookies.get("auth_token"))
