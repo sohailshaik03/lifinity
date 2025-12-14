@@ -1,0 +1,1486 @@
+2025-12-12 23:26:14 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-12 23:26:14 | ERROR    | retailsight | ❌ Failed to initialise DB pool: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+_mysql_connector.MySQLInterfaceError: Access denied for user 'root'@'localhost' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\db.py", line 35, in init_db_pool
+    connection_pool = pooling.MySQLConnectionPool(
+        pool_name="retailsight_pool",
+    ...<7 lines>...
+        collation="utf8mb4_unicode_ci",
+    )
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-12 23:26:14 | ERROR    | retailsight | ❌ DB health check failed: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-13 00:04:33 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-13 00:04:33 | ERROR    | retailsight | ❌ Failed to initialise DB pool: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+_mysql_connector.MySQLInterfaceError: Access denied for user 'root'@'localhost' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\db.py", line 45, in init_db_pool
+    connection_pool = pooling.MySQLConnectionPool(
+        pool_name="retailsight_pool",
+    ...<7 lines>...
+        collation="utf8mb4_unicode_ci",
+    )
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-13 00:04:33 | ERROR    | retailsight | ❌ DB health check failed: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-13 00:05:40 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-13 00:05:41 | ERROR    | retailsight | ❌ Failed to initialise DB pool: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+_mysql_connector.MySQLInterfaceError: Access denied for user 'root'@'localhost' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\db.py", line 45, in init_db_pool
+    connection_pool = pooling.MySQLConnectionPool(
+        pool_name="retailsight_pool",
+    ...<7 lines>...
+        collation="utf8mb4_unicode_ci",
+    )
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-13 00:05:41 | ERROR    | retailsight | ❌ DB health check failed: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-13 00:09:58 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-13 00:09:58 | ERROR    | retailsight | ❌ Failed to initialise DB pool: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+_mysql_connector.MySQLInterfaceError: Access denied for user 'root'@'localhost' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\db.py", line 45, in init_db_pool
+    connection_pool = pooling.MySQLConnectionPool(
+        pool_name="retailsight_pool",
+    ...<7 lines>...
+        collation="utf8mb4_unicode_ci",
+    )
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-13 00:09:58 | ERROR    | retailsight | ❌ DB health check failed: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-13 00:12:39 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-13 00:12:39 | ERROR    | retailsight | ❌ Failed to initialise DB pool: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+_mysql_connector.MySQLInterfaceError: Access denied for user 'root'@'localhost' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\db.py", line 35, in init_db_pool
+    connection_pool = pooling.MySQLConnectionPool(
+        pool_name="retailsight_pool",
+    ...<7 lines>...
+        collation="utf8mb4_unicode_ci",
+    )
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-13 00:12:39 | ERROR    | retailsight | ❌ DB health check failed: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-13 00:17:20 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-13 00:17:20 | ERROR    | retailsight | ❌ Failed to initialise DB pool: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+_mysql_connector.MySQLInterfaceError: Access denied for user 'root'@'localhost' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\db.py", line 35, in init_db_pool
+    connection_pool = pooling.MySQLConnectionPool(
+        pool_name="retailsight_pool",
+    ...<7 lines>...
+        collation="utf8mb4_unicode_ci",
+    )
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-13 00:17:20 | ERROR    | retailsight | ❌ DB health check failed: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-13 00:25:48 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-13 00:25:48 | ERROR    | retailsight | ❌ Failed to initialise DB pool: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+_mysql_connector.MySQLInterfaceError: Access denied for user 'root'@'localhost' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\db.py", line 35, in init_db_pool
+    connection_pool = pooling.MySQLConnectionPool(
+        pool_name="retailsight_pool",
+    ...<7 lines>...
+        collation="utf8mb4_unicode_ci",
+    )
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-13 00:25:48 | ERROR    | retailsight | ❌ DB health check failed: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-13 00:28:07 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-13 00:28:08 | ERROR    | retailsight | ❌ Failed to initialise DB pool: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+_mysql_connector.MySQLInterfaceError: Access denied for user 'root'@'localhost' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\db.py", line 35, in init_db_pool
+    connection_pool = pooling.MySQLConnectionPool(
+        pool_name="retailsight_pool",
+    ...<7 lines>...
+        collation="utf8mb4_unicode_ci",
+    )
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-13 00:28:08 | ERROR    | retailsight | ❌ DB health check failed: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-13 00:40:22 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-13 00:43:30 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-13 00:43:30 | ERROR    | retailsight | ❌ Failed to initialise DB pool: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+_mysql_connector.MySQLInterfaceError: Access denied for user 'root'@'localhost' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\db.py", line 35, in init_db_pool
+    connection_pool = pooling.MySQLConnectionPool(
+        pool_name="retailsight_pool",
+    ...<7 lines>...
+        collation="utf8mb4_unicode_ci",
+    )
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-13 00:43:30 | ERROR    | retailsight | ❌ DB health check failed: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-13 01:22:58 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-13 01:22:58 | ERROR    | retailsight | ❌ Failed to initialise DB pool: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+_mysql_connector.MySQLInterfaceError: Access denied for user 'root'@'localhost' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\db.py", line 35, in init_db_pool
+    connection_pool = pooling.MySQLConnectionPool(
+        pool_name="retailsight_pool",
+    ...<7 lines>...
+        collation="utf8mb4_unicode_ci",
+    )
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 490, in __init__
+    self.add_connection()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 613, in add_connection
+    cnx = connect(**self._cnx_config)  # type: ignore[assignment]
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\abstracts.py", line 1604, in connect
+    self._open_connection()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-13 01:22:58 | ERROR    | retailsight | ❌ DB health check failed: 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2025-12-13 01:24:42 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-13 01:24:42 | INFO     | retailsight | ✅ Database pool initialised successfully.
+2025-12-13 01:28:16 | ERROR    | retailsight | get_user_by_email error: 1146 (42S02): Table 'lifinity.users' doesn't exist
+2025-12-13 01:33:36 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-13 01:33:36 | INFO     | retailsight | ✅ Database pool initialised successfully.
+2025-12-13 01:34:37 | ERROR    | retailsight | create_user error: 1146 (42S02): Table 'lifinity.users' doesn't exist
+2025-12-13 01:38:33 | ERROR    | retailsight | create_user error: 1146 (42S02): Table 'lifinity.users' doesn't exist
+2025-12-13 01:38:35 | ERROR    | retailsight | create_user error: 1146 (42S02): Table 'lifinity.users' doesn't exist
+2025-12-13 01:39:37 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-13 01:39:37 | INFO     | retailsight | ✅ Database pool initialised successfully.
+2025-12-13 01:39:38 | ERROR    | retailsight | create_user error: 1146 (42S02): Table 'lifinity.users' doesn't exist
+2025-12-13 01:44:37 | ERROR    | retailsight | Failed to fetch user shops: 1146 (42S02): Table 'lifinity.user_shops' doesn't exist
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Table 'lifinity.user_shops' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\repositories\shops_repo.py", line 176, in get_user_shops
+    cur.execute(
+    ~~~~~~~~~~~^
+        """
+        ^^^
+    ...<6 lines>...
+        (user_id,),
+        ^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'lifinity.user_shops' doesn't exist
+2025-12-13 01:44:38 | ERROR    | retailsight | get_all_stores_overview error: Execution failed on sql '
+                SELECT 
+                    s.id,
+                    s.name as store_name,
+                    CONCAT(COALESCE(s.city, ''), ', ', COALESCE(s.country, '')) as location,
+                    COUNT(DISTINCT p.id) as total_products,
+                    COALESCE(staff_count.total_staff, 0) as staff_count,
+                    COALESCE(revenue.total_revenue_7d, 0) as revenue_last_7_days,
+                    COALESCE(waste.total_waste_units_30d, 0) as waste_units_last_30_days,
+                    COALESCE(waste.total_waste_cost_30d, 0) as waste_cost_last_30_days,
+                    COALESCE(markdown.markdown_count_7d, 0) as markdown_sales_7d,
+                    COALESCE(markdown.markdown_revenue_7d, 0) as markdown_revenue_7d,
+                    s.created_at as store_opened_date
+                FROM shops s
+                LEFT JOIN products p ON s.id = p.shop_id
+                LEFT JOIN (
+                    SELECT shop_id, COUNT(DISTINCT user_id) as total_staff
+                    FROM user_shops
+                    GROUP BY shop_id
+                ) staff_count ON s.id = staff_count.shop_id
+                LEFT JOIN (
+                    SELECT 
+                        p.shop_id,
+                        SUM(sl.quantity * sl.unit_price) as total_revenue_7d
+                    FROM sales_lines sl
+                    JOIN sales_transactions sa ON sl.transaction_id = sa.id
+                    JOIN products p ON sl.product_id = p.id
+                    WHERE sa.transaction_dt >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                    GROUP BY p.shop_id
+                ) revenue ON s.id = revenue.shop_id
+                LEFT JOIN (
+                    SELECT 
+                        p.shop_id,
+                        SUM(w.quantity_wasted) as total_waste_units_30d,
+                        SUM(w.quantity_wasted * COALESCE(p.default_cost, 0)) as total_waste_cost_30d
+                    FROM waste_records w
+                    JOIN products p ON w.product_id = p.id
+                    WHERE w.recorded_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+                    GROUP BY p.shop_id
+                ) waste ON s.id = waste.shop_id
+                LEFT JOIN (
+                    SELECT 
+                        shop_id,
+                        COUNT(*) as markdown_count_7d,
+                        SUM(discounted_price * quantity_sold) as markdown_revenue_7d
+                    FROM markdown_sales
+                    WHERE sold_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                    GROUP BY shop_id
+                ) markdown ON s.id = markdown.shop_id
+                GROUP BY s.id, s.name, s.city, s.country, s.created_at, 
+                         staff_count.total_staff,
+                         revenue.total_revenue_7d, waste.total_waste_units_30d, waste.total_waste_cost_30d,
+                         markdown.markdown_count_7d, markdown.markdown_revenue_7d
+                ORDER BY revenue_last_7_days DESC
+            ': 1146 (42S02): Table 'lifinity.products' doesn't exist
+2025-12-13 01:44:54 | ERROR    | retailsight | Failed to fetch user shops: 1146 (42S02): Table 'lifinity.user_shops' doesn't exist
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Table 'lifinity.user_shops' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\repositories\shops_repo.py", line 176, in get_user_shops
+    cur.execute(
+    ~~~~~~~~~~~^
+        """
+        ^^^
+    ...<6 lines>...
+        (user_id,),
+        ^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'lifinity.user_shops' doesn't exist
+2025-12-13 01:44:57 | ERROR    | retailsight | Failed to fetch user shops: 1146 (42S02): Table 'lifinity.user_shops' doesn't exist
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Table 'lifinity.user_shops' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\repositories\shops_repo.py", line 176, in get_user_shops
+    cur.execute(
+    ~~~~~~~~~~~^
+        """
+        ^^^
+    ...<6 lines>...
+        (user_id,),
+        ^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'lifinity.user_shops' doesn't exist
+2025-12-13 01:44:59 | ERROR    | retailsight | Failed to fetch user shops: 1146 (42S02): Table 'lifinity.user_shops' doesn't exist
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Table 'lifinity.user_shops' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\repositories\shops_repo.py", line 176, in get_user_shops
+    cur.execute(
+    ~~~~~~~~~~~^
+        """
+        ^^^
+    ...<6 lines>...
+        (user_id,),
+        ^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'lifinity.user_shops' doesn't exist
+2025-12-13 01:45:00 | ERROR    | retailsight | Failed to fetch user shops: 1146 (42S02): Table 'lifinity.user_shops' doesn't exist
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Table 'lifinity.user_shops' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\repositories\shops_repo.py", line 176, in get_user_shops
+    cur.execute(
+    ~~~~~~~~~~~^
+        """
+        ^^^
+    ...<6 lines>...
+        (user_id,),
+        ^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'lifinity.user_shops' doesn't exist
+2025-12-13 01:45:02 | ERROR    | retailsight | ❌ Could not get connection from pool: Failed getting connection; pool exhausted
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 654, in get_connection
+    cnx = self._cnx_queue.get(block=False)
+  File "C:\Users\Minfy\AppData\Local\Programs\Python\Python313\Lib\queue.py", line 199, in get
+    raise Empty
+_queue.Empty
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\db.py", line 60, in get_connection
+    conn = connection_pool.get_connection()
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 656, in get_connection
+    raise PoolError("Failed getting connection; pool exhausted") from err
+mysql.connector.errors.PoolError: Failed getting connection; pool exhausted
+2025-12-13 01:45:02 | ERROR    | retailsight | ❌ DB health check failed: Failed getting connection; pool exhausted
+2025-12-13 01:45:07 | ERROR    | retailsight | ❌ Could not get connection from pool: Failed getting connection; pool exhausted
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 654, in get_connection
+    cnx = self._cnx_queue.get(block=False)
+  File "C:\Users\Minfy\AppData\Local\Programs\Python\Python313\Lib\queue.py", line 199, in get
+    raise Empty
+_queue.Empty
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\db.py", line 60, in get_connection
+    conn = connection_pool.get_connection()
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 656, in get_connection
+    raise PoolError("Failed getting connection; pool exhausted") from err
+mysql.connector.errors.PoolError: Failed getting connection; pool exhausted
+2025-12-13 01:45:07 | ERROR    | retailsight | ❌ DB health check failed: Failed getting connection; pool exhausted
+2025-12-13 01:45:15 | ERROR    | retailsight | ❌ Could not get connection from pool: Failed getting connection; pool exhausted
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 654, in get_connection
+    cnx = self._cnx_queue.get(block=False)
+  File "C:\Users\Minfy\AppData\Local\Programs\Python\Python313\Lib\queue.py", line 199, in get
+    raise Empty
+_queue.Empty
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\db.py", line 60, in get_connection
+    conn = connection_pool.get_connection()
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 656, in get_connection
+    raise PoolError("Failed getting connection; pool exhausted") from err
+mysql.connector.errors.PoolError: Failed getting connection; pool exhausted
+2025-12-13 01:45:15 | ERROR    | retailsight | ❌ DB health check failed: Failed getting connection; pool exhausted
+2025-12-13 01:45:56 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-13 01:45:56 | INFO     | retailsight | ✅ Database pool initialised successfully.
+2025-12-13 01:46:23 | ERROR    | retailsight | Failed to fetch user shops: 1146 (42S02): Table 'lifinity.user_shops' doesn't exist
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Table 'lifinity.user_shops' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\repositories\shops_repo.py", line 176, in get_user_shops
+    cur.execute(
+    ~~~~~~~~~~~^
+        """
+        ^^^
+    ...<6 lines>...
+        (user_id,),
+        ^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'lifinity.user_shops' doesn't exist
+2025-12-13 01:46:23 | ERROR    | retailsight | get_all_stores_overview error: Execution failed on sql '
+                SELECT 
+                    s.id,
+                    s.name as store_name,
+                    CONCAT(COALESCE(s.city, ''), ', ', COALESCE(s.country, '')) as location,
+                    COUNT(DISTINCT p.id) as total_products,
+                    COALESCE(staff_count.total_staff, 0) as staff_count,
+                    COALESCE(revenue.total_revenue_7d, 0) as revenue_last_7_days,
+                    COALESCE(waste.total_waste_units_30d, 0) as waste_units_last_30_days,
+                    COALESCE(waste.total_waste_cost_30d, 0) as waste_cost_last_30_days,
+                    COALESCE(markdown.markdown_count_7d, 0) as markdown_sales_7d,
+                    COALESCE(markdown.markdown_revenue_7d, 0) as markdown_revenue_7d,
+                    s.created_at as store_opened_date
+                FROM shops s
+                LEFT JOIN products p ON s.id = p.shop_id
+                LEFT JOIN (
+                    SELECT shop_id, COUNT(DISTINCT user_id) as total_staff
+                    FROM user_shops
+                    GROUP BY shop_id
+                ) staff_count ON s.id = staff_count.shop_id
+                LEFT JOIN (
+                    SELECT 
+                        p.shop_id,
+                        SUM(sl.quantity * sl.unit_price) as total_revenue_7d
+                    FROM sales_lines sl
+                    JOIN sales_transactions sa ON sl.transaction_id = sa.id
+                    JOIN products p ON sl.product_id = p.id
+                    WHERE sa.transaction_dt >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                    GROUP BY p.shop_id
+                ) revenue ON s.id = revenue.shop_id
+                LEFT JOIN (
+                    SELECT 
+                        p.shop_id,
+                        SUM(w.quantity_wasted) as total_waste_units_30d,
+                        SUM(w.quantity_wasted * COALESCE(p.default_cost, 0)) as total_waste_cost_30d
+                    FROM waste_records w
+                    JOIN products p ON w.product_id = p.id
+                    WHERE w.recorded_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+                    GROUP BY p.shop_id
+                ) waste ON s.id = waste.shop_id
+                LEFT JOIN (
+                    SELECT 
+                        shop_id,
+                        COUNT(*) as markdown_count_7d,
+                        SUM(discounted_price * quantity_sold) as markdown_revenue_7d
+                    FROM markdown_sales
+                    WHERE sold_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                    GROUP BY shop_id
+                ) markdown ON s.id = markdown.shop_id
+                GROUP BY s.id, s.name, s.city, s.country, s.created_at, 
+                         staff_count.total_staff,
+                         revenue.total_revenue_7d, waste.total_waste_units_30d, waste.total_waste_cost_30d,
+                         markdown.markdown_count_7d, markdown.markdown_revenue_7d
+                ORDER BY revenue_last_7_days DESC
+            ': 1146 (42S02): Table 'lifinity.products' doesn't exist
+2025-12-13 01:46:52 | ERROR    | retailsight | Failed to fetch user shops: 1146 (42S02): Table 'lifinity.user_shops' doesn't exist
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Table 'lifinity.user_shops' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\repositories\shops_repo.py", line 176, in get_user_shops
+    cur.execute(
+    ~~~~~~~~~~~^
+        """
+        ^^^
+    ...<6 lines>...
+        (user_id,),
+        ^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'lifinity.user_shops' doesn't exist
+2025-12-13 01:47:01 | ERROR    | retailsight | Failed to fetch user shops: 1146 (42S02): Table 'lifinity.user_shops' doesn't exist
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Table 'lifinity.user_shops' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\repositories\shops_repo.py", line 176, in get_user_shops
+    cur.execute(
+    ~~~~~~~~~~~^
+        """
+        ^^^
+    ...<6 lines>...
+        (user_id,),
+        ^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'lifinity.user_shops' doesn't exist
+2025-12-13 01:47:01 | ERROR    | retailsight | get_all_stores_overview error: Execution failed on sql '
+                SELECT 
+                    s.id,
+                    s.name as store_name,
+                    CONCAT(COALESCE(s.city, ''), ', ', COALESCE(s.country, '')) as location,
+                    COUNT(DISTINCT p.id) as total_products,
+                    COALESCE(staff_count.total_staff, 0) as staff_count,
+                    COALESCE(revenue.total_revenue_7d, 0) as revenue_last_7_days,
+                    COALESCE(waste.total_waste_units_30d, 0) as waste_units_last_30_days,
+                    COALESCE(waste.total_waste_cost_30d, 0) as waste_cost_last_30_days,
+                    COALESCE(markdown.markdown_count_7d, 0) as markdown_sales_7d,
+                    COALESCE(markdown.markdown_revenue_7d, 0) as markdown_revenue_7d,
+                    s.created_at as store_opened_date
+                FROM shops s
+                LEFT JOIN products p ON s.id = p.shop_id
+                LEFT JOIN (
+                    SELECT shop_id, COUNT(DISTINCT user_id) as total_staff
+                    FROM user_shops
+                    GROUP BY shop_id
+                ) staff_count ON s.id = staff_count.shop_id
+                LEFT JOIN (
+                    SELECT 
+                        p.shop_id,
+                        SUM(sl.quantity * sl.unit_price) as total_revenue_7d
+                    FROM sales_lines sl
+                    JOIN sales_transactions sa ON sl.transaction_id = sa.id
+                    JOIN products p ON sl.product_id = p.id
+                    WHERE sa.transaction_dt >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                    GROUP BY p.shop_id
+                ) revenue ON s.id = revenue.shop_id
+                LEFT JOIN (
+                    SELECT 
+                        p.shop_id,
+                        SUM(w.quantity_wasted) as total_waste_units_30d,
+                        SUM(w.quantity_wasted * COALESCE(p.default_cost, 0)) as total_waste_cost_30d
+                    FROM waste_records w
+                    JOIN products p ON w.product_id = p.id
+                    WHERE w.recorded_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+                    GROUP BY p.shop_id
+                ) waste ON s.id = waste.shop_id
+                LEFT JOIN (
+                    SELECT 
+                        shop_id,
+                        COUNT(*) as markdown_count_7d,
+                        SUM(discounted_price * quantity_sold) as markdown_revenue_7d
+                    FROM markdown_sales
+                    WHERE sold_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                    GROUP BY shop_id
+                ) markdown ON s.id = markdown.shop_id
+                GROUP BY s.id, s.name, s.city, s.country, s.created_at, 
+                         staff_count.total_staff,
+                         revenue.total_revenue_7d, waste.total_waste_units_30d, waste.total_waste_cost_30d,
+                         markdown.markdown_count_7d, markdown.markdown_revenue_7d
+                ORDER BY revenue_last_7_days DESC
+            ': 1146 (42S02): Table 'lifinity.products' doesn't exist
+2025-12-13 01:49:17 | ERROR    | retailsight | Failed to fetch user shops: 1146 (42S02): Table 'lifinity.user_shops' doesn't exist
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Table 'lifinity.user_shops' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\repositories\shops_repo.py", line 176, in get_user_shops
+    cur.execute(
+    ~~~~~~~~~~~^
+        """
+        ^^^
+    ...<6 lines>...
+        (user_id,),
+        ^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'lifinity.user_shops' doesn't exist
+2025-12-13 01:49:17 | ERROR    | retailsight | get_all_stores_overview error: Execution failed on sql '
+                SELECT 
+                    s.id,
+                    s.name as store_name,
+                    CONCAT(COALESCE(s.city, ''), ', ', COALESCE(s.country, '')) as location,
+                    COUNT(DISTINCT p.id) as total_products,
+                    COALESCE(staff_count.total_staff, 0) as staff_count,
+                    COALESCE(revenue.total_revenue_7d, 0) as revenue_last_7_days,
+                    COALESCE(waste.total_waste_units_30d, 0) as waste_units_last_30_days,
+                    COALESCE(waste.total_waste_cost_30d, 0) as waste_cost_last_30_days,
+                    COALESCE(markdown.markdown_count_7d, 0) as markdown_sales_7d,
+                    COALESCE(markdown.markdown_revenue_7d, 0) as markdown_revenue_7d,
+                    s.created_at as store_opened_date
+                FROM shops s
+                LEFT JOIN products p ON s.id = p.shop_id
+                LEFT JOIN (
+                    SELECT shop_id, COUNT(DISTINCT user_id) as total_staff
+                    FROM user_shops
+                    GROUP BY shop_id
+                ) staff_count ON s.id = staff_count.shop_id
+                LEFT JOIN (
+                    SELECT 
+                        p.shop_id,
+                        SUM(sl.quantity * sl.unit_price) as total_revenue_7d
+                    FROM sales_lines sl
+                    JOIN sales_transactions sa ON sl.transaction_id = sa.id
+                    JOIN products p ON sl.product_id = p.id
+                    WHERE sa.transaction_dt >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                    GROUP BY p.shop_id
+                ) revenue ON s.id = revenue.shop_id
+                LEFT JOIN (
+                    SELECT 
+                        p.shop_id,
+                        SUM(w.quantity_wasted) as total_waste_units_30d,
+                        SUM(w.quantity_wasted * COALESCE(p.default_cost, 0)) as total_waste_cost_30d
+                    FROM waste_records w
+                    JOIN products p ON w.product_id = p.id
+                    WHERE w.recorded_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+                    GROUP BY p.shop_id
+                ) waste ON s.id = waste.shop_id
+                LEFT JOIN (
+                    SELECT 
+                        shop_id,
+                        COUNT(*) as markdown_count_7d,
+                        SUM(discounted_price * quantity_sold) as markdown_revenue_7d
+                    FROM markdown_sales
+                    WHERE sold_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                    GROUP BY shop_id
+                ) markdown ON s.id = markdown.shop_id
+                GROUP BY s.id, s.name, s.city, s.country, s.created_at, 
+                         staff_count.total_staff,
+                         revenue.total_revenue_7d, waste.total_waste_units_30d, waste.total_waste_cost_30d,
+                         markdown.markdown_count_7d, markdown.markdown_revenue_7d
+                ORDER BY revenue_last_7_days DESC
+            ': 1146 (42S02): Table 'lifinity.products' doesn't exist
+2025-12-13 01:58:38 | ERROR    | retailsight | Failed to fetch user shops: 1054 (42S22): Unknown column 's.address_line1' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 's.address_line1' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\repositories\shops_repo.py", line 176, in get_user_shops
+    cur.execute(
+    ~~~~~~~~~~~^
+        """
+        ^^^
+    ...<6 lines>...
+        (user_id,),
+        ^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 's.address_line1' in 'field list'
+2025-12-13 01:58:38 | ERROR    | retailsight | ❌ Could not get connection from pool: Failed getting connection; pool exhausted
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 654, in get_connection
+    cnx = self._cnx_queue.get(block=False)
+  File "C:\Users\Minfy\AppData\Local\Programs\Python\Python313\Lib\queue.py", line 199, in get
+    raise Empty
+_queue.Empty
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\db.py", line 60, in get_connection
+    conn = connection_pool.get_connection()
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 656, in get_connection
+    raise PoolError("Failed getting connection; pool exhausted") from err
+mysql.connector.errors.PoolError: Failed getting connection; pool exhausted
+2025-12-13 01:58:38 | ERROR    | retailsight | Error rendering Enterprise Dashboard: Failed getting connection; pool exhausted
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 654, in get_connection
+    cnx = self._cnx_queue.get(block=False)
+  File "C:\Users\Minfy\AppData\Local\Programs\Python\Python313\Lib\queue.py", line 199, in get
+    raise Empty
+_queue.Empty
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\app.py", line 80, in _safe_render
+    fn(*a, **kw)
+    ~~^^^^^^^^^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\ui\tabs\enterprise_tab.py", line 41, in render_enterprise_dashboard
+    render_multi_store_overview()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\ui\tabs\enterprise_tab.py", line 61, in render_multi_store_overview
+    stores = MultiStoreAnalytics.get_all_stores_overview()
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\services\multi_store_analytics.py", line 20, in get_all_stores_overview
+    conn = get_connection()
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\db.py", line 60, in get_connection
+    conn = connection_pool.get_connection()
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 656, in get_connection
+    raise PoolError("Failed getting connection; pool exhausted") from err
+mysql.connector.errors.PoolError: Failed getting connection; pool exhausted
+2025-12-13 01:58:46 | ERROR    | retailsight | ❌ Could not get connection from pool: Failed getting connection; pool exhausted
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 654, in get_connection
+    cnx = self._cnx_queue.get(block=False)
+  File "C:\Users\Minfy\AppData\Local\Programs\Python\Python313\Lib\queue.py", line 199, in get
+    raise Empty
+_queue.Empty
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\db.py", line 60, in get_connection
+    conn = connection_pool.get_connection()
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 656, in get_connection
+    raise PoolError("Failed getting connection; pool exhausted") from err
+mysql.connector.errors.PoolError: Failed getting connection; pool exhausted
+2025-12-13 01:58:46 | ERROR    | retailsight | ❌ DB health check failed: Failed getting connection; pool exhausted
+2025-12-13 01:58:49 | ERROR    | retailsight | ❌ Could not get connection from pool: Failed getting connection; pool exhausted
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 654, in get_connection
+    cnx = self._cnx_queue.get(block=False)
+  File "C:\Users\Minfy\AppData\Local\Programs\Python\Python313\Lib\queue.py", line 199, in get
+    raise Empty
+_queue.Empty
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\db.py", line 60, in get_connection
+    conn = connection_pool.get_connection()
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 656, in get_connection
+    raise PoolError("Failed getting connection; pool exhausted") from err
+mysql.connector.errors.PoolError: Failed getting connection; pool exhausted
+2025-12-13 01:58:49 | ERROR    | retailsight | ❌ DB health check failed: Failed getting connection; pool exhausted
+2025-12-13 02:04:48 | ERROR    | retailsight | ❌ Could not get connection from pool: Failed getting connection; pool exhausted
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 654, in get_connection
+    cnx = self._cnx_queue.get(block=False)
+  File "C:\Users\Minfy\AppData\Local\Programs\Python\Python313\Lib\queue.py", line 199, in get
+    raise Empty
+_queue.Empty
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\db.py", line 60, in get_connection
+    conn = connection_pool.get_connection()
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 656, in get_connection
+    raise PoolError("Failed getting connection; pool exhausted") from err
+mysql.connector.errors.PoolError: Failed getting connection; pool exhausted
+2025-12-13 02:04:48 | ERROR    | retailsight | ❌ DB health check failed: Failed getting connection; pool exhausted
+2025-12-13 02:05:10 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-13 02:05:10 | INFO     | retailsight | ✅ Database pool initialised successfully.
+2025-12-13 02:05:34 | ERROR    | retailsight | Failed to fetch shops: 1054 (42S22): Unknown column 'address_line1' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'address_line1' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\repositories\shops_repo.py", line 23, in get_all_shops
+    cur.execute(
+    ~~~~~~~~~~~^
+        """
+        ^^^
+    ...<3 lines>...
+        """
+        ^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'address_line1' in 'field list'
+2025-12-13 02:05:35 | ERROR    | retailsight | get_all_stores_overview error: Execution failed on sql '
+                SELECT 
+                    s.id,
+                    s.name as store_name,
+                    CONCAT(COALESCE(s.city, ''), ', ', COALESCE(s.country, '')) as location,
+                    COUNT(DISTINCT p.id) as total_products,
+                    COALESCE(staff_count.total_staff, 0) as staff_count,
+                    COALESCE(revenue.total_revenue_7d, 0) as revenue_last_7_days,
+                    COALESCE(waste.total_waste_units_30d, 0) as waste_units_last_30_days,
+                    COALESCE(waste.total_waste_cost_30d, 0) as waste_cost_last_30_days,
+                    COALESCE(markdown.markdown_count_7d, 0) as markdown_sales_7d,
+                    COALESCE(markdown.markdown_revenue_7d, 0) as markdown_revenue_7d,
+                    s.created_at as store_opened_date
+                FROM shops s
+                LEFT JOIN products p ON s.id = p.shop_id
+                LEFT JOIN (
+                    SELECT shop_id, COUNT(DISTINCT user_id) as total_staff
+                    FROM user_shops
+                    GROUP BY shop_id
+                ) staff_count ON s.id = staff_count.shop_id
+                LEFT JOIN (
+                    SELECT 
+                        p.shop_id,
+                        SUM(sl.quantity * sl.unit_price) as total_revenue_7d
+                    FROM sales_lines sl
+                    JOIN sales_transactions sa ON sl.transaction_id = sa.id
+                    JOIN products p ON sl.product_id = p.id
+                    WHERE sa.transaction_dt >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                    GROUP BY p.shop_id
+                ) revenue ON s.id = revenue.shop_id
+                LEFT JOIN (
+                    SELECT 
+                        p.shop_id,
+                        SUM(w.quantity_wasted) as total_waste_units_30d,
+                        SUM(w.quantity_wasted * COALESCE(p.default_cost, 0)) as total_waste_cost_30d
+                    FROM waste_records w
+                    JOIN products p ON w.product_id = p.id
+                    WHERE w.recorded_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+                    GROUP BY p.shop_id
+                ) waste ON s.id = waste.shop_id
+                LEFT JOIN (
+                    SELECT 
+                        shop_id,
+                        COUNT(*) as markdown_count_7d,
+                        SUM(discounted_price * quantity_sold) as markdown_revenue_7d
+                    FROM markdown_sales
+                    WHERE sold_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                    GROUP BY shop_id
+                ) markdown ON s.id = markdown.shop_id
+                GROUP BY s.id, s.name, s.city, s.country, s.created_at, 
+                         staff_count.total_staff,
+                         revenue.total_revenue_7d, waste.total_waste_units_30d, waste.total_waste_cost_30d,
+                         markdown.markdown_count_7d, markdown.markdown_revenue_7d
+                ORDER BY revenue_last_7_days DESC
+            ': 1146 (42S02): Table 'lifinity.products' doesn't exist
+2025-12-13 02:06:09 | ERROR    | retailsight | Failed to fetch shops: 1054 (42S22): Unknown column 'address_line1' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'address_line1' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\repositories\shops_repo.py", line 23, in get_all_shops
+    cur.execute(
+    ~~~~~~~~~~~^
+        """
+        ^^^
+    ...<3 lines>...
+        """
+        ^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'address_line1' in 'field list'
+2025-12-13 02:06:09 | ERROR    | retailsight | Failed to fetch shops: 1054 (42S22): Unknown column 'address_line1' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'address_line1' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\repositories\shops_repo.py", line 23, in get_all_shops
+    cur.execute(
+    ~~~~~~~~~~~^
+        """
+        ^^^
+    ...<3 lines>...
+        """
+        ^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'address_line1' in 'field list'
+2025-12-13 02:06:09 | ERROR    | retailsight | Failed to fetch shops: 1054 (42S22): Unknown column 'address_line1' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'address_line1' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\repositories\shops_repo.py", line 23, in get_all_shops
+    cur.execute(
+    ~~~~~~~~~~~^
+        """
+        ^^^
+    ...<3 lines>...
+        """
+        ^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'address_line1' in 'field list'
+2025-12-13 02:06:09 | ERROR    | retailsight | Failed to fetch shops: 1054 (42S22): Unknown column 'address_line1' in 'field list'
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+    ~~~~~~~~~~~~~~~~~~^
+        query,
+        ^^^^^^
+    ...<3 lines>...
+        query_attrs=self.query_attrs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+_mysql_connector.MySQLInterfaceError: Unknown column 'address_line1' in 'field list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\repositories\shops_repo.py", line 23, in get_all_shops
+    cur.execute(
+    ~~~~~~~~~~~^
+        """
+        ^^^
+    ...<3 lines>...
+        """
+        ^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._stmt_partition["mappable_stmt"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_as_string=self._raw_as_string,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+        err.errno, msg=err.msg, sqlstate=err.sqlstate
+    ) from err
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'address_line1' in 'field list'
+2025-12-13 02:06:12 | ERROR    | retailsight | ❌ Could not get connection from pool: Failed getting connection; pool exhausted
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 654, in get_connection
+    cnx = self._cnx_queue.get(block=False)
+  File "C:\Users\Minfy\AppData\Local\Programs\Python\Python313\Lib\queue.py", line 199, in get
+    raise Empty
+_queue.Empty
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\db.py", line 60, in get_connection
+    conn = connection_pool.get_connection()
+  File "C:\Users\Minfy\Desktop\lifinity\Retailsights\.venv\Lib\site-packages\mysql\connector\pooling.py", line 656, in get_connection
+    raise PoolError("Failed getting connection; pool exhausted") from err
+mysql.connector.errors.PoolError: Failed getting connection; pool exhausted
+2025-12-13 02:06:12 | ERROR    | retailsight | ❌ DB health check failed: Failed getting connection; pool exhausted
+2025-12-14 00:02:24 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-14 00:02:49 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-14 00:02:50 | INFO     | retailsight | ✅ Database pool initialised successfully.
+2025-12-14 00:04:14 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-14 00:04:15 | INFO     | retailsight | ✅ Database pool initialised successfully.
+2025-12-14 00:14:33 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-14 00:14:34 | INFO     | retailsight | ✅ Database pool initialised successfully.
+2025-12-14 18:52:27 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-14 18:55:58 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-14 19:03:48 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.
+2025-12-14 19:03:51 | ERROR    | retailsight | ❌ DB health check failed: (psycopg2.OperationalError) could not translate host name "hostname" to address: Name or service not known
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-12-14 19:10:19 | WARNING  | retailsight | Stripe not installed. Payment processing will be in test mode.

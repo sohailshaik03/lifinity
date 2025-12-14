@@ -1,0 +1,7 @@
+{
+  "name": "retailsights",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "streamlit run Retailsights/app.py"
+  }
+}
