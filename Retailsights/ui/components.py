@@ -18,26 +18,35 @@ def show_top_bar(user: dict | None):
 
 
 def show_logout_button():
-    if st.sidebar.button("Logout"):
-        # Clear cookies and persistent storage FIRST
+    if st.sidebar.button("Logout", type="primary"):
+        # Step 1: Clear cookies and persistent storage FIRST
         try:
             from Retailsights.utils.session_manager import SessionManager
             session_mgr = SessionManager()
             session_mgr.clear_session()
         except Exception:
-            pass
+            pass  # Continue even if this fails
         
-        # Clear ALL session state keys
-        keys_to_keep = set()  # Don't keep any keys
-        keys_to_delete = [k for k in st.session_state.keys() if k not in keys_to_keep]
+        # Step 2: Clear ALL session state keys carefully
+        keys_to_delete = []
+        for key in list(st.session_state.keys()):
+            # Skip internal streamlit widget keys but delete our custom keys
+            if not key.startswith('FormSubmitter:'):
+                keys_to_delete.append(key)
+        
         for key in keys_to_delete:
-            del st.session_state[key]
+            try:
+                del st.session_state[key]
+            except Exception:
+                pass
         
-        # Set flag to prevent session restoration
+        # Step 3: Set clean state for logout
         st.session_state["_just_logged_out"] = True
         st.session_state["is_authenticated"] = False
         st.session_state["auth_user"] = None
+        st.session_state["current_shop"] = None
         
+        # Step 4: Force rerun
         st.rerun()
 
 

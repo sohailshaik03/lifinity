@@ -45,7 +45,11 @@ class SessionManager:
             if not user_id:
                 return
             
-            # Always save to session state as primary storage
+            # Clear any existing logout flag
+            if "_just_logged_out" in st.session_state:
+                del st.session_state["_just_logged_out"]
+            
+            # Save to session state as primary storage
             st.session_state["_persistent_user_id"] = str(user_id)
             st.session_state["_persistent_user_email"] = user.get("email", "")
             st.session_state["_persistent_user_name"] = user.get("full_name", "")
@@ -88,7 +92,15 @@ class SessionManager:
     
     def load_session(self) -> Optional[Dict[str, Any]]:
         """Load user session from session state or cookies"""
-        # First try session state (fastest and most reliable)
+        # Don't restore if already authenticated in current session
+        if st.session_state.get("is_authenticated") and st.session_state.get("auth_user"):
+            return None
+        
+        # Don't restore if just logged out
+        if st.session_state.get("_just_logged_out"):
+            return None
+        
+        # Try session state persistent storage
         user_id_str = st.session_state.get("_persistent_user_id")
         if user_id_str:
             try:
@@ -102,6 +114,8 @@ class SessionManager:
                         "role": user["role"],
                     }
             except Exception:
+                # Clear corrupted session data
+                self.clear_session()
                 pass
         
         # Fallback to cookies if available
@@ -149,25 +163,34 @@ class SessionManager:
             return None
     
     def clear_session(self):
-        """Clear all session data"""
+        """Clear all session data completely"""
         # Clear cookies FIRST if available
         if self.cookie_manager:
             try:
+                # Try to delete with explicit keys
                 self.cookie_manager.delete("auth_token", key="delete_auth_token")
-                self.cookie_manager.delete("user_id", key="delete_user_id")
+                self.cookie_manager.delete("user_id", key="delete_user_id")  
                 self.cookie_manager.delete("user_email", key="delete_user_email")
             except Exception:
                 pass
         
-        # Clear session state
-        for key in ["_persistent_user_id", "_persistent_user_email", "_persistent_user_name", "_persistent_user_role"]:
+        # Clear ALL persistent session state keys
+        persistent_keys = ["_persistent_user_id", "_persistent_user_email", "_persistent_user_name", "_persistent_user_role"]
+        for key in persistent_keys:
             if key in st.session_state:
-                del st.session_state[key]
+                try:
+                    del st.session_state[key]
+                except Exception:
+                    pass
         
         # Clear auth state
-        for key in ["auth_user", "is_authenticated", "current_shop"]:
+        auth_keys = ["auth_user", "is_authenticated", "current_shop"]
+        for key in auth_keys:
             if key in st.session_state:
-                del st.session_state[key]
+                try:
+                    del st.session_state[key]
+                except Exception:
+                    pass
     
     def is_session_valid(self) -> bool:
         """Check if there's a valid session"""

@@ -60,10 +60,16 @@ def initialize_session_state() -> None:
             st.session_state["current_shop"] = None
         return
     
-    # Always try to restore session first before initializing to False
+    # Check if already authenticated in current session
+    if st.session_state.get("is_authenticated") and st.session_state.get("auth_user"):
+        # Already logged in this session, don't restore again
+        if "current_shop" not in st.session_state:
+            st.session_state["current_shop"] = None
+        return
+    
+    # Try to restore from session manager only if not already authenticated
     session_restored = False
     
-    # Try to restore from session manager (cookies) on every page load
     try:
         from Retailsights.utils.session_manager import SessionManager
         session_mgr = SessionManager()
