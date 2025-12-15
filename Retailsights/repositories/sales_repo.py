@@ -9,6 +9,7 @@ from ..logger import log
 from typing import Any, Dict, List
 from datetime import datetime
 from sqlalchemy import func
+import streamlit as st
 
 
 class SalesRepository:
@@ -110,6 +111,7 @@ class SalesRepository:
     # READS (used by analytics_service)
     # ------------------------------------------------------
     @staticmethod
+    @st.cache_data(ttl=300, show_spinner=False)  # Cache for 5 minutes
     def get_transactions_for_upload(
         shop_id: int, upload_id: int
     ) -> List[Dict[str, Any]]:

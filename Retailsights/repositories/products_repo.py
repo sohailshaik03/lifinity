@@ -4,8 +4,10 @@ from typing import Any, Dict, List, Optional
 from ..db_orm import get_session
 from ..models import Product, ExpiryRecord, WasteRecord
 from ..logger import logger
+from ..utils.cache_manager import cache
 from datetime import datetime, timedelta
 from sqlalchemy import func, select, text
+import streamlit as st
 
 
 def create_product(
@@ -31,35 +33,60 @@ def create_product(
         session.close()
 
 
+@st.cache_data(ttl=300, show_spinner=False)  # Cache for 5 minutes
 def get_products_by_shop(shop_id: int) -> List[Dict[str, Any]]:
     session = get_session()
     try:
-        products = session.query(Product).filter(Product.shop_id == shop_id).order_by(Product.name).all()
+        # Optimized query - join with aggregated stock in single query
+        products_with_stock = (
+            session.query(
+                Product.id,
+                Product.name,
+                Product.sku,
+                Product.default_cost,
+                Product.created_at,
+                func.coalesce(func.sum(ExpiryRecord.quantity), 0).label('current_stock')
+            )
+            .outerjoin(ExpiryRecord, Product.id == ExpiryRecord.product_id)
+            .filter(Product.shop_id == shop_id)
+            .group_by(Product.id, Product.name, Product.sku, Product.default_cost, Product.created_at)
+            .order_by(Product.name)
+            .all()
+        )
+        
         result: List[Dict[str, Any]] = []
-        for p in products:
-            stock = session.query(func.coalesce(func.sum(ExpiryRecord.quantity), 0)).filter(ExpiryRecord.product_id == p.id).scalar() or 0
-            result.append({
-                "id": p.id,
-                "name": p.name,
-                "sku": p.sku,
-                "default_cost": p.default_cost,
-                "current_stock": stock,
-                "created_at": p.created_at,
-            })
-        return result
-    except Exception as e:
-        logger.error(f"get_products_by_shop error: {e}")
-        return []
-    finally:
-        session.close()
-
-
+        for row in products_with_stock:
+@st.cache_data(ttl=60, show_spinner=False)  # Cache for 1 minute
 def get_expiring_products(shop_id: int, days_threshold: int = 30) -> List[Dict[str, Any]]:
     """Get products expiring within days_threshold."""
     session = get_session()
     try:
         cutoff = datetime.utcnow() + timedelta(days=days_threshold)
+        # Optimized: Select only needed columns
         rows = (
+            session.query(
+                Product.id,
+                Product.sku,
+                Product.name,
+                ExpiryRecord.quantity,
+                ExpiryRecord.id.label('expiry_id'),
+                ExpiryRecord.expired_at
+            )
+            .join(ExpiryRecord, Product.id == ExpiryRecord.product_id)
+            .filter(Product.shop_id == shop_id)
+            .filter(ExpiryRecord.expired_at <= cutoff)
+            .order_by(ExpiryRecord.expired_at.asc())
+            .all()
+        )
+        result: List[Dict[str, Any]] = []
+        for row in rows:
+            result.append({
+                "id": row.id,
+                "sku": row.sku,
+                "name": row.name,
+                "current_stock": row.quantity,
+                "expiry_id": row.expiry_id,
+                "expiry_date": row
             session.query(Product, ExpiryRecord)
             .join(ExpiryRecord, Product.id == ExpiryRecord.product_id)
             .filter(Product.shop_id == shop_id)

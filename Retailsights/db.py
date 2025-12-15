@@ -30,7 +30,9 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise ValueError("DATABASE_URL must be set for PostgreSQL connection")
 
-DB_POOL_SIZE = int(os.getenv("DB_POOL_SIZE", "5"))
+DB_POOL_SIZE = int(os.getenv("DB_POOL_SIZE", "10"))
+DB_MAX_OVERFLOW = int(os.getenv("DB_MAX_OVERFLOW", "20"))
+DB_POOL_RECYCLE = int(os.getenv("DB_POOL_RECYCLE", "3600"))  # 1 hour
 
 # =============================
 # GLOBAL ENGINE AND SESSION
@@ -39,10 +41,16 @@ engine = create_engine(
     DATABASE_URL,
     poolclass=QueuePool,
     pool_size=DB_POOL_SIZE,
-    max_overflow=10,
+    max_overflow=DB_MAX_OVERFLOW,
     pool_pre_ping=True,
+    pool_recycle=DB_POOL_RECYCLE,  # Recycle connections after 1 hour
+    pool_timeout=30,  # Wait max 30s for connection
     echo=False,
-    future=True
+    future=True,
+    connect_args={
+        "connect_timeout": 10,
+        "options": "-c statement_timeout=30000"  # 30s query timeout
+    }
 )
 SessionLocal = scoped_session(sessionmaker(bind=engine, autoflush=False, autocommit=False))
 
