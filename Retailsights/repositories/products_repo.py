@@ -4,9 +4,8 @@ from typing import Any, Dict, List, Optional
 from ..db_orm import get_session
 from ..models import Product, ExpiryRecord, WasteRecord
 from ..logger import logger
-from typing import Any, Dict, List, Optional
 from datetime import datetime, timedelta
-from sqlalchemy import func, select
+from sqlalchemy import func, select, text
 
 
 def create_product(
@@ -138,7 +137,13 @@ def decrement_expiring_stock(product_id: int, quantity: int = 1) -> bool:
         session.close()
 
 
-def record_waste(product_id: int, quantity_wasted: int, reason: str, expiry_record_id: int | None = None, user_id: int | None = None) -> Optional[int]:
+def record_waste(
+    product_id: int,
+    quantity_wasted: int,
+    reason: str,
+    expiry_record_id: int | None = None,
+    user_id: int | None = None,
+) -> Optional[int]:
     session = get_session()
     try:
         # find expiry record if not provided
@@ -153,7 +158,13 @@ def record_waste(product_id: int, quantity_wasted: int, reason: str, expiry_reco
                 .order_by(ExpiryRecord.expired_at.asc())
                 .first()
             )
-        wr = WasteRecord(product_id=product_id, quantity_wasted=quantity_wasted)
+        wr = WasteRecord(
+            product_id=product_id, 
+            quantity_wasted=quantity_wasted,
+            reason=reason,
+            expiry_record_id=expiry_record_id,
+            recorded_by=user_id
+        )
         session.add(wr)
         if er:
             er.quantity = max(0, er.quantity - quantity_wasted)
@@ -166,44 +177,6 @@ def record_waste(product_id: int, quantity_wasted: int, reason: str, expiry_reco
         return None
     finally:
         session.close()
-
-
-def record_waste(
-    product_id: int,
-    quantity_wasted: int,
-    reason: str,
-    expiry_record_id: int | None = None,
-    user_id: int | None = None,
-) -> Optional[int]:
-    conn = get_connection()
-    cur = conn.cursor()
-    try:
-        cur.execute(
-            """
-            INSERT INTO waste_records (product_id, expiry_record_id, quantity_wasted, reason, recorded_by)
-            VALUES (%s, %s, %s, %s, %s)
-            """,
-            (product_id, expiry_record_id, quantity_wasted, reason, user_id),
-        )
-        if expiry_record_id:
-            # Reduce quantity_remaining
-            cur.execute(
-                """
-                UPDATE expiry_records
-                SET quantity_remaining = GREATEST(0, quantity_remaining - %s)
-                WHERE id = %s
-                """,
-                (quantity_wasted, expiry_record_id),
-            )
-        conn.commit()
-        return cur.lastrowid
-    except Exception as e:
-        logger.error(f"record_waste error: {e}")
-        conn.rollback()
-        return None
-    finally:
-        cur.close()
-        conn.close()
 
 
 def get_waste_records(shop_id: int, days: int = 7) -> List[Dict[str, Any]]:
@@ -236,20 +209,18 @@ def get_waste_records(shop_id: int, days: int = 7) -> List[Dict[str, Any]]:
 
 
 def get_discount_rules(shop_id: int) -> List[Dict[str, Any]]:
-    conn = get_connection()
-    cur = conn.cursor(dictionary=True)
+    session = get_session()
     try:
-        cur.execute(
-            "SELECT * FROM discount_rules WHERE shop_id = %s AND active = 1 ORDER BY days_left_min DESC",
-            (shop_id,),
+        result = session.execute(
+            text("SELECT * FROM discount_rules WHERE shop_id = :shop_id AND active = 1 ORDER BY days_left_min DESC"),
+            {"shop_id": shop_id}
         )
-        return cur.fetchall() or []
+        return [dict(row._mapping) for row in result.fetchall()]
     except Exception as e:
         logger.error(f"get_discount_rules error: {e}")
         return []
     finally:
-        cur.close()
-        conn.close()
+        session.close()
 
 
 def create_discount_rule(
@@ -260,23 +231,28 @@ def create_discount_rule(
     quantity_min: int,
     discount_percent: float,
 ) -> Optional[int]:
-    conn = get_connection()
-    cur = conn.cursor()
+    session = get_session()
     try:
-        cur.execute(
-            """
+        result = session.execute(
+            text("""
             INSERT INTO discount_rules (shop_id, name, days_left_min, days_left_max,
                                        quantity_min, discount_percent)
-            VALUES (%s, %s, %s, %s, %s, %s)
-            """,
-            (shop_id, name, days_left_min, days_left_max, quantity_min, discount_percent),
+            VALUES (:shop_id, :name, :days_left_min, :days_left_max, :quantity_min, :discount_percent)
+            """),
+            {
+                "shop_id": shop_id,
+                "name": name,
+                "days_left_min": days_left_min,
+                "days_left_max": days_left_max,
+                "quantity_min": quantity_min,
+                "discount_percent": discount_percent
+            }
         )
-        conn.commit()
-        return cur.lastrowid
+        session.commit()
+        return result.lastrowid
     except Exception as e:
         logger.error(f"create_discount_rule error: {e}")
-        conn.rollback()
+        session.rollback()
         return None
     finally:
-        cur.close()
-        conn.close()
+        session.close()

@@ -8,7 +8,9 @@ from typing import Any, Dict, List, Optional, Tuple
 from datetime import datetime
 import base64
 from io import BytesIO
-from ..db import get_connection
+from sqlalchemy import text
+from ..db import get_session
+from ..models import Product
 from ..logger import logger
 
 try:
@@ -287,25 +289,24 @@ class ComputerVisionService:
         """
         Comprehensive visual quality inspection report.
         """
-        conn = get_connection()
+        session = get_session()
         try:
-            # Get product info
-            cur = conn.cursor(dictionary=True)
-            cur.execute("""
-                SELECT sku, name, category 
-                FROM products 
-                WHERE id = %s
-            """, (product_id,))
-            
-            product = cur.fetchone()
+            # Get product info using SQLAlchemy ORM
+            product = session.query(Product).filter(Product.id == product_id).first()
             
             if not product:
                 return {"error": "Product not found"}
             
+            product_info = {
+                'sku': product.sku,
+                'name': product.name,
+                'category': product.category
+            }
+            
             # Run all CV analyses
             freshness = ComputerVisionService.detect_product_freshness(
                 image_data, 
-                product['category']
+                product_info['category']
             )
             
             packaging = ComputerVisionService.detect_damaged_packaging(image_data)
@@ -333,28 +334,33 @@ class ComputerVisionService:
                 action = "REMOVE"
                 recommendation = "Poor quality - remove from shelf immediately"
             
-            # Store inspection record
-            cur.execute("""
-                INSERT INTO quality_inspections 
-                (product_id, overall_score, freshness_score, packaging_score, 
-                 action_required, recommendation, inspected_at)
-                VALUES (%s, %s, %s, %s, %s, %s, NOW())
-            """, (
-                product_id,
-                overall_score,
-                freshness.get('freshness_score', 0),
-                100 - packaging.get('damage_score', 0) if packaging.get('success') else None,
-                action,
-                recommendation
-            ))
+            # Store inspection record using SQLAlchemy text query
+            result = session.execute(
+                text("""
+                    INSERT INTO quality_inspections 
+                    (product_id, overall_score, freshness_score, packaging_score, 
+                     action_required, recommendation, inspected_at)
+                    VALUES (:product_id, :overall_score, :freshness_score, :packaging_score, 
+                            :action_required, :recommendation, NOW())
+                    RETURNING id
+                """),
+                {
+                    'product_id': product_id,
+                    'overall_score': overall_score,
+                    'freshness_score': freshness.get('freshness_score', 0),
+                    'packaging_score': 100 - packaging.get('damage_score', 0) if packaging.get('success') else None,
+                    'action_required': action,
+                    'recommendation': recommendation
+                }
+            )
             
-            conn.commit()
-            inspection_id = cur.lastrowid
+            session.commit()
+            inspection_id = result.fetchone()[0]
             
             return {
                 "success": True,
                 "inspection_id": inspection_id,
-                "product": product,
+                "product": product_info,
                 "overall_score": round(overall_score, 1),
                 "action_required": action,
                 "recommendation": recommendation,
@@ -366,10 +372,11 @@ class ComputerVisionService:
             }
             
         except Exception as e:
+            session.rollback()
             logger.error(f"generate_quality_report error: {e}")
             return {"success": False, "error": str(e)}
         finally:
-            conn.close()
+            session.close()
     
     @staticmethod
     def monitor_shelf_with_camera(camera_id: str, shop_id: int) -> Dict[str, Any]:

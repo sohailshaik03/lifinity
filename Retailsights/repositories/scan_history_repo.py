@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
+from sqlalchemy import text
 from ..db import get_connection
 from ..logger import logger
 
@@ -19,36 +20,34 @@ def record_scan_event(
 ) -> Optional[int]:
     """Insert a scan history record. Returns inserted id or None."""
     conn = get_connection()
-    cur = conn.cursor()
     try:
-        cur.execute(
-            """
+        result = conn.execute(
+            text("""
             INSERT INTO scan_history (
               shop_id, product_id, code, code_type, source,
               discount_applied, discount_percent, original_price, discounted_price, message
-            ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-            """,
-            (
-                shop_id,
-                product_id,
-                code,
-                code_type,
-                source,
-                1 if discount_applied else 0,
-                discount_percent,
-                original_price,
-                discounted_price,
-                message,
-            ),
+            ) VALUES (:shop_id, :product_id, :code, :code_type, :source, :discount_applied, :discount_percent, :original_price, :discounted_price, :message)
+            """),
+            {
+                "shop_id": shop_id,
+                "product_id": product_id,
+                "code": code,
+                "code_type": code_type,
+                "source": source,
+                "discount_applied": 1 if discount_applied else 0,
+                "discount_percent": discount_percent,
+                "original_price": original_price,
+                "discounted_price": discounted_price,
+                "message": message,
+            }
         )
         conn.commit()
-        return cur.lastrowid
+        return result.lastrowid
     except Exception as e:
         logger.error(f"record_scan_event error: {e}")
         conn.rollback()
         return None
     finally:
-        cur.close()
         conn.close()
 
 

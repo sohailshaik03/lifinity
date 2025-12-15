@@ -4,8 +4,11 @@ from typing import Any, Dict, List
 import pandas as pd
 from datetime import datetime, timedelta
 from ..repositories.products_repo import get_discount_rules
-from ..db import get_connection
+from ..db_orm import get_session
+from ..models import Product, SalesLine, SalesTransaction, ExpiryRecord, WasteRecord
 from ..logger import logger
+from sqlalchemy import func, case, cast, Date
+from sqlalchemy.orm import aliased
 
 
 class DiscountReportService:
@@ -14,35 +17,57 @@ class DiscountReportService:
     @staticmethod
     def get_discount_applied_records(shop_id: int, days: int = 30) -> List[Dict[str, Any]]:
         """Fetch records of products sold with discounts."""
-        conn = get_connection()
-        cur = conn.cursor(dictionary=True)
+        session = get_session()
         try:
-            cur.execute(
-                """
-                SELECT
-                    p.id, p.sku, p.name, p.selling_price,
-                    sl.quantity, sl.unit_price, sl.line_revenue,
-                    er.days_left,
-                    ROUND(((p.selling_price - sl.unit_price) / p.selling_price) * 100, 2) as discount_applied_pct,
-                    DATE(st.transaction_dt) as sale_date
-                FROM sales_lines sl
-                JOIN products p ON sl.product_id = p.id
-                JOIN sales_transactions st ON sl.transaction_id = st.id
-                LEFT JOIN expiry_records er ON sl.product_id = er.product_id
-                WHERE st.shop_id = %s
-                    AND st.transaction_dt >= NOW() - INTERVAL '%s days'
-                    AND sl.unit_price < p.selling_price
-                ORDER BY st.transaction_dt DESC
-                """,
-                (shop_id, days),
-            )
-            return cur.fetchall() or []
+            cutoff_date = datetime.utcnow() - timedelta(days=days)
+            
+            results = session.query(
+                Product.id,
+                Product.sku,
+                Product.name,
+                Product.selling_price,
+                SalesLine.quantity,
+                SalesLine.unit_price,
+                SalesLine.line_revenue,
+                ExpiryRecord.days_left,
+                func.round(
+                    ((Product.selling_price - SalesLine.unit_price) / Product.selling_price) * 100, 2
+                ).label('discount_applied_pct'),
+                cast(SalesTransaction.transaction_dt, Date).label('sale_date')
+            ).join(
+                Product, SalesLine.product_id == Product.id
+            ).join(
+                SalesTransaction, SalesLine.transaction_id == SalesTransaction.id
+            ).outerjoin(
+                ExpiryRecord, SalesLine.product_id == ExpiryRecord.product_id
+            ).filter(
+                SalesTransaction.shop_id == shop_id,
+                SalesTransaction.transaction_dt >= cutoff_date,
+                SalesLine.unit_price < Product.selling_price
+            ).order_by(
+                SalesTransaction.transaction_dt.desc()
+            ).all()
+            
+            return [
+                {
+                    'id': r.id,
+                    'sku': r.sku,
+                    'name': r.name,
+                    'selling_price': r.selling_price,
+                    'quantity': r.quantity,
+                    'unit_price': r.unit_price,
+                    'line_revenue': r.line_revenue,
+                    'days_left': r.days_left,
+                    'discount_applied_pct': r.discount_applied_pct,
+                    'sale_date': r.sale_date
+                }
+                for r in results
+            ]
         except Exception as e:
             logger.error(f"get_discount_applied_records error: {e}")
             return []
         finally:
-            cur.close()
-            conn.close()
+            session.close()
 
     @staticmethod
     def calculate_discount_impact(discount_records: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -102,47 +127,44 @@ class DiscountReportService:
     @staticmethod
     def get_expiring_vs_wasted(shop_id: int, days: int = 30) -> Dict[str, Any]:
         """Compare expiring product counts vs wasted counts."""
-        conn = get_connection()
-        cur = conn.cursor(dictionary=True)
+        session = get_session()
         try:
-            cur.execute(
-                """
-                SELECT
-                    COUNT(DISTINCT er.id) as total_expiry_batches,
-                    SUM(CASE WHEN er.days_left <= 0 THEN 1 ELSE 0 END) as expired_batches,
-                    SUM(er.quantity_remaining) as total_remaining_qty
-                FROM expiry_records er
-                JOIN products p ON er.product_id = p.id
-                WHERE p.shop_id = %s AND er.created_at >= NOW() - INTERVAL '%s days'
-                """,
-                (shop_id, days),
-            )
-            expiry_stats = cur.fetchone() or {}
+            cutoff_date = datetime.utcnow() - timedelta(days=days)
+            
+            # Get expiry stats
+            expiry_stats = session.query(
+                func.count(func.distinct(ExpiryRecord.id)).label('total_expiry_batches'),
+                func.sum(case((ExpiryRecord.days_left <= 0, 1), else_=0)).label('expired_batches'),
+                func.sum(ExpiryRecord.quantity_remaining).label('total_remaining_qty')
+            ).join(
+                Product, ExpiryRecord.product_id == Product.id
+            ).filter(
+                Product.shop_id == shop_id,
+                ExpiryRecord.created_at >= cutoff_date
+            ).first()
 
-            cur.execute(
-                """
-                SELECT
-                    COUNT(*) as total_waste_events,
-                    SUM(quantity_wasted) as total_wasted_qty,
-                    COUNT(DISTINCT product_id) as unique_products_wasted
-                FROM waste_records wr
-                JOIN products p ON wr.product_id = p.id
-                WHERE p.shop_id = %s AND wr.recorded_at >= NOW() - INTERVAL '%s days'
-                """,
-                (shop_id, days),
-            )
-            waste_stats = cur.fetchone() or {}
+            # Get waste stats
+            waste_stats = session.query(
+                func.count(WasteRecord.id).label('total_waste_events'),
+                func.sum(WasteRecord.quantity_wasted).label('total_wasted_qty'),
+                func.count(func.distinct(WasteRecord.product_id)).label('unique_products_wasted')
+            ).join(
+                Product, WasteRecord.product_id == Product.id
+            ).filter(
+                Product.shop_id == shop_id,
+                WasteRecord.recorded_at >= cutoff_date
+            ).first()
 
             return {
                 "expiry": {
-                    "total_batches": expiry_stats.get("total_expiry_batches", 0),
-                    "expired_batches": expiry_stats.get("expired_batches", 0),
-                    "remaining_qty": expiry_stats.get("total_remaining_qty", 0),
+                    "total_batches": expiry_stats.total_expiry_batches or 0,
+                    "expired_batches": expiry_stats.expired_batches or 0,
+                    "remaining_qty": expiry_stats.total_remaining_qty or 0,
                 },
                 "waste": {
-                    "total_events": waste_stats.get("total_waste_events", 0),
-                    "total_wasted_qty": waste_stats.get("total_wasted_qty", 0),
-                    "unique_products": waste_stats.get("unique_products_wasted", 0),
+                    "total_events": waste_stats.total_waste_events or 0,
+                    "total_wasted_qty": waste_stats.total_wasted_qty or 0,
+                    "unique_products": waste_stats.unique_products_wasted or 0,
                 },
             }
 
@@ -150,5 +172,4 @@ class DiscountReportService:
             logger.error(f"get_expiring_vs_wasted error: {e}")
             return {}
         finally:
-            cur.close()
-            conn.close()
+            session.close()
