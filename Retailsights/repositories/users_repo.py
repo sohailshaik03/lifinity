@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
+import streamlit as st
 
 from Retailsights.db_orm import get_session
 from Retailsights.models import User
@@ -9,9 +10,10 @@ from ..logger import logger
 from typing import Any, Dict, Optional
 
 
+@st.cache_data(ttl=300, show_spinner=False)  # Cache for 5 minutes
 def get_user_by_email(email: str) -> Optional[Dict[str, Any]]:
     """
-    Fetch an active user by email.
+    Fetch an active user by email. Cached to speed up repeated lookups.
     """
     session = get_session()
     try:
@@ -34,9 +36,10 @@ def get_user_by_email(email: str) -> Optional[Dict[str, Any]]:
         session.close()
 
 
+@st.cache_data(ttl=300, show_spinner=False)  # Cache for 5 minutes
 def get_user_by_id(user_id: int) -> Optional[Dict[str, Any]]:
     """
-    Fetch an active user by ID.
+    Fetch an active user by ID. Cached to speed up session restoration.
     """
     session = get_session()
     try:
