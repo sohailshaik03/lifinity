@@ -1,32 +1,67 @@
-streamlit
-pandas
-numpy
-plotly
-python-dotenv
-bcrypt
-reportlab
-python-barcode
-Pillow
-pyzbar
-opencv-python-headless
-streamlit-webrtc
-qrcode
-scikit-learn
-statsmodels
-matplotlib
-seaborn
-loguru
-boto3
-prophet
-celery
-redis
-redis-om
-hiredis
-openai
-sendgrid
-twilio
-python-dateutil
-openpyxl
-SQLAlchemy>=1.4
-psycopg2-binary
-extra-streamlit-components
+# Core web framework
+streamlit>=1.52.0
+
+# Data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Visualization
+plotly>=5.14.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Configuration
+python-dotenv>=1.0.0
+
+# Authentication and security
+bcrypt>=4.0.0
+
+# PDF generation and barcodes
+reportlab>=4.0.0
+python-barcode>=0.15.0
+Pillow>=10.0.0
+qrcode>=7.4.0
+
+# Image processing and computer vision
+pyzbar>=0.1.9
+opencv-python-headless>=4.8.0
+
+# Streamlit extensions
+streamlit-webrtc>=0.47.0
+extra-streamlit-components>=0.1.60
+
+# Machine learning and analytics
+scikit-learn>=1.3.0
+statsmodels>=0.14.0
+prophet>=1.1.4
+
+# Logging
+loguru>=0.7.0
+
+# Cloud storage (AWS)
+boto3>=1.28.0
+
+# Task queue
+celery>=5.3.0
+
+# Caching (Redis)
+redis>=5.0.0
+redis-om>=0.2.0
+hiredis>=2.2.0
+requests>=2.31.0
+
+# AI/ML services
+openai>=1.0.0
+
+# Notifications
+sendgrid>=6.10.0
+twilio>=8.9.0
+
+# Utilities
+python-dateutil>=2.8.0
+openpyxl>=3.1.0
+
+# Database
+SQLAlchemy>=2.0.0
+psycopg2-binary>=2.9.0
+

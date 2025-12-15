@@ -1,6 +1,16 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Float, Boolean, Table
-from sqlalchemy.orm import relationship, declarative_base
+"""SQLAlchemy ORM models for RetailSights application.
+
+Defines database schema for users, shops, products, sales, waste tracking,
+and markdown sales. Uses declarative base pattern for clean model definition.
+"""
 from datetime import datetime
+from typing import TYPE_CHECKING
+
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Float, Boolean, Table
+from sqlalchemy.orm import relationship, declarative_base, Mapped
+
+if TYPE_CHECKING:
+    from sqlalchemy.orm import RelationshipProperty
 
 Base = declarative_base()
 
@@ -14,36 +24,79 @@ user_shops = Table(
 
 
 class User(Base):
+    """User model representing system users (admin, manager, staff).
+    
+    Attributes:
+        id: Primary key
+        email: Unique email address for login
+        password_hash: Bcrypt hashed password (never store plain text)
+        full_name: User's display name
+        role: User role (admin, manager, user)
+        is_active: Account status flag
+        created_at: Account creation timestamp
+    """
     __tablename__ = "users"
+    
     id = Column(Integer, primary_key=True)
-    email = Column(String(255), unique=True, nullable=False)
+    email = Column(String(255), unique=True, nullable=False, index=True)
     password_hash = Column(String(255), nullable=False)
     full_name = Column(String(255))
-    role = Column(String(50), default="user")
+    role = Column(String(50), default="user", nullable=False, index=True)
     is_active = Column(Boolean, default=True, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
 
 class Shop(Base):
+    """Shop/store location model.
+    
+    Represents a physical retail location with products and sales.
+    Each shop can have multiple users assigned and tracks its own inventory.
+    
+    Attributes:
+        id: Primary key
+        name: Shop display name
+        address: Street address
+        city: City name
+        country: Country name
+        created_at: Shop registration timestamp
+        owner_user_id: Reference to owning user (optional)
+        owner: Relationship to User model
+    """
     __tablename__ = "shops"
+    
     id = Column(Integer, primary_key=True)
-    name = Column(String(255), nullable=False)
+    name = Column(String(255), nullable=False, index=True)
     address = Column(Text)
     city = Column(String(100))
     country = Column(String(100))
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     owner_user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     owner = relationship("User", backref="shops")
 
 
 class Product(Base):
+    """Product catalog model.
+    
+    Represents items sold in shops. Each product belongs to a specific shop
+    and tracks SKU, pricing, and other attributes.
+    
+    Attributes:
+        id: Primary key
+        shop_id: Reference to owning shop
+        name: Product display name
+        sku: Stock keeping unit identifier
+        default_cost: Default product cost/price
+        created_at: Product creation timestamp
+        shop: Relationship to Shop model
+    """
     __tablename__ = "products"
+    
     id = Column(Integer, primary_key=True)
-    shop_id = Column(Integer, ForeignKey("shops.id"), nullable=False)
+    shop_id = Column(Integer, ForeignKey("shops.id"), nullable=False, index=True)
     name = Column(String(255), nullable=False)
-    sku = Column(String(100))
+    sku = Column(String(100), index=True)
     default_cost = Column(Float, default=0.0)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     shop = relationship("Shop", backref="products")
 
 

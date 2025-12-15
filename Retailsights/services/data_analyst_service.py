@@ -167,7 +167,7 @@ class DataAnalystService:
         try:
             pd.to_datetime(sample_data.iloc[:5], errors="coerce")
             return True
-        except:
+        except (ValueError, TypeError, AttributeError):
             return False
 
     @staticmethod
@@ -196,7 +196,7 @@ class DataAnalystService:
             if numeric_data.notna().sum() > 0:
                 # Quantities are usually small integers
                 return (numeric_data >= 0).all() and (numeric_data < 10000).all()
-        except:
+        except (ValueError, TypeError):
             pass
         return False
 
@@ -222,7 +222,7 @@ class DataAnalystService:
                 # Prices usually have decimals
                 has_decimals = (numeric_data % 1 != 0).any()
                 return has_decimals and (numeric_data >= 0).all()
-        except:
+        except (ValueError, TypeError):
             pass
         return False
 
@@ -245,7 +245,7 @@ class DataAnalystService:
         try:
             unique_count = sample_data.nunique()
             return 2 <= unique_count <= 50
-        except:
+        except (ValueError, TypeError):
             pass
         return False
 

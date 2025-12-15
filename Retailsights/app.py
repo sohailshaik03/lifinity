@@ -33,8 +33,22 @@ from .ui.tabs.support_tab import render_support_tab
 from .ui.tabs.subscription_tab import render_subscription_tab
 
 
-def initialize_session_state():
-    """Initialize session state variables to prevent loss on refresh."""
+def initialize_session_state() -> None:
+    """Initialize and restore session state variables.
+    
+    Handles session persistence across page refreshes while respecting
+    explicit logout actions. Loads saved session from SessionManager
+    if available and no recent logout occurred.
+    
+    Session State Keys:
+        is_authenticated: Boolean flag for login status
+        auth_user: Dictionary containing user data (id, email, name, role)
+        current_shop: Currently selected shop dictionary or None
+        _just_logged_out: Flag to prevent session restoration after logout
+    
+    Returns:
+        None
+    """
     # Check if user just logged out - don't restore session if so
     if st.session_state.get("_just_logged_out"):
         # Clear the flag and don't restore session
@@ -76,7 +90,20 @@ def initialize_session_state():
         st.session_state["current_shop"] = None
 
 
-def render_main_shell(user: dict):
+def render_main_shell(user: dict) -> None:
+    """Render main application shell with navigation and shop selector.
+    
+    Args:
+        user: Dictionary containing user information (id, email, name, role)
+        
+    Returns:
+        None
+        
+    Side Effects:
+        - Displays sidebar navigation
+        - Updates session state with selected shop
+        - Renders appropriate tab based on user role
+    """
     st.sidebar.title("📍 Navigation")
 
     # --- Shop selector (sidebar) ---

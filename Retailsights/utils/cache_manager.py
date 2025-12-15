@@ -1,6 +1,7 @@
-# utils/cache_manager.py
-"""
-Centralized caching utilities with Redis/Upstash support for production performance
+"""Centralized caching utilities with Redis/Upstash support for production performance.
+
+Provides three-tier caching: Upstash REST API → Redis → Streamlit cache
+Supports distributed caching for serverless deployments.
 """
 from __future__ import annotations
 
@@ -12,6 +13,7 @@ import json
 import pickle
 import os
 from datetime import timedelta
+from loguru import logger
 
 # Try to import Redis
 try:
@@ -31,7 +33,19 @@ except ImportError:
 
 
 class CacheManager:
-    """Manage application-wide caching with Redis/Upstash fallback to Streamlit cache"""
+    """Manage application-wide caching with Redis/Upstash fallback to Streamlit cache.
+    
+    Implements three-tier caching strategy:
+    1. Upstash REST API (best for serverless/Streamlit Cloud)
+    2. Standard Redis (for self-hosted deployments)
+    3. Streamlit cache (fallback when no external cache available)
+    
+    Attributes:
+        TTL_SHORT: 60 seconds for frequently changing data
+        TTL_MEDIUM: 300 seconds for semi-static data
+        TTL_LONG: 3600 seconds for static reference data
+        TTL_VERY_LONG: 86400 seconds for rarely changing data
+    """
     
     # Cache TTLs in seconds
     TTL_SHORT = 60           # 1 minute - frequently changing data
@@ -60,10 +74,10 @@ class CacheManager:
                     self.upstash_rest_url = upstash_url
                     self.upstash_rest_token = upstash_token
                     self.use_upstash_rest = True
-                    print("✅ Upstash Redis REST API connected successfully")
+                    logger.info("Upstash Redis REST API connected successfully")
                     return
             except Exception as e:
-                print(f"⚠️ Upstash REST API connection failed: {e}")
+                logger.warning(f"Upstash REST API connection failed: {e}")
         
         # Fallback to standard Redis connection
         if REDIS_AVAILABLE:
@@ -97,9 +111,9 @@ class CacheManager:
                     # Test connection
                     self.redis_client.ping()
                     self.use_redis = True
-                    print("✅ Redis cache connected successfully")
+                    logger.info("Redis cache connected successfully")
                 except Exception as e:
-                    print(f"⚠️ Redis connection failed: {e}. Falling back to Streamlit cache.")
+                    logger.warning(f"Redis connection failed: {e}. Falling back to Streamlit cache.")
                     self.redis_client = None
                     self.use_redis = False
     
@@ -123,7 +137,7 @@ class CacheManager:
                         decoded = base64.b64decode(result)
                         return pickle.loads(decoded)
             except Exception as e:
-                print(f"Upstash REST get error: {e}")
+                logger.debug(f"Upstash REST get error: {e}")
         
         # Fallback to standard Redis
         if self.use_redis and self.redis_client:
@@ -132,7 +146,7 @@ class CacheManager:
                 if data:
                     return pickle.loads(data)
             except Exception as e:
-                print(f"Redis get error: {e}")
+                logger.debug(f"Redis get error: {e}")
         return None
     
     def set(self, key: str, value: Any, ttl: int = TTL_MEDIUM):
@@ -159,7 +173,7 @@ class CacheManager:
                 if response.status_code == 200:
                     return True
             except Exception as e:
-                print(f"Upstash REST set error: {e}")
+                logger.debug(f"Upstash REST set error: {e}")
         
         # Fallback to standard Redis
         if self.use_redis and self.redis_client:
@@ -168,7 +182,7 @@ class CacheManager:
                 self.redis_client.setex(key, ttl, serialized)
                 return True
             except Exception as e:
-                print(f"Redis set error: {e}")
+                logger.debug(f"Redis set error: {e}")
         return False
     
     def delete(self, key: str):
@@ -182,13 +196,13 @@ class CacheManager:
                     timeout=3
                 )
             except Exception as e:
-                print(f"Upstash REST delete error: {e}")
+                logger.debug(f"Upstash REST delete error: {e}")
         
         if self.use_redis and self.redis_client:
             try:
                 self.redis_client.delete(key)
             except Exception as e:
-                print(f"Redis delete error: {e}")
+                logger.debug(f"Redis delete error: {e}")
     
     def clear_pattern(self, pattern: str):
         """Clear all keys matching pattern (e.g., 'user:*')"""
@@ -200,7 +214,7 @@ class CacheManager:
                 if keys:
                     self.redis_client.delete(*keys)
             except Exception as e:
-                print(f"Redis clear pattern error: {e}")
+                logger.debug(f"Redis clear pattern error: {e}")
     
     def cache_data(self, ttl: int = TTL_MEDIUM, show_spinner: bool = False):
         """Decorator for caching data with Redis/Upstash or Streamlit fallback"""
@@ -237,9 +251,9 @@ class CacheManager:
         if self.use_redis and self.redis_client:
             try:
                 self.redis_client.flushdb()
-                print("✅ Redis cache cleared")
+                logger.info("Redis cache cleared")
             except Exception as e:
-                print(f"Redis flush error: {e}")
+                logger.error(f"Redis flush error: {e}")
         
         # Also clear Streamlit caches
         st.cache_data.clear()
@@ -261,7 +275,7 @@ class CacheManager:
             try:
                 return self.redis_client.incr(key, amount)
             except Exception as e:
-                print(f"Redis incr error: {e}")
+                logger.debug(f"Redis incr error: {e}")
         return 0
     
     def set_with_expiry(self, key: str, value: Any, seconds: int):
