@@ -31,6 +31,7 @@ from .ui.tabs.enterprise_tab import render_enterprise_dashboard
 from .ui.tabs.advanced_tech_tab import render_advanced_tech_tab
 from .ui.tabs.support_tab import render_support_tab
 from .ui.tabs.subscription_tab import render_subscription_tab
+from .ui.tabs.payment_tab import render_payment_tab
 
 
 def initialize_session_state() -> None:
@@ -134,6 +135,7 @@ def render_main_shell(user: dict) -> None:
             "🏢 Enterprise Dashboard",
             "🚀 Advanced Tech",
             "💎 Subscription",
+            "💳 Payments",
             "Upload & Analyse",
             "History & Reports",
             "Manager Dashboard",
@@ -170,6 +172,9 @@ def render_main_shell(user: dict) -> None:
     
     elif tabs == "💎 Subscription":
         _safe_render("Subscription", render_subscription_tab, state)
+    
+    elif tabs == "💳 Payments":
+        _safe_render("Payments", render_payment_tab, user, state.get("current_shop"))
 
     elif tabs == "Upload & Analyse":
         _safe_render("Upload & Analyse", render_upload_tab, state)

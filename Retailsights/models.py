@@ -165,3 +165,92 @@ class ExpiryRecord(Base):
     status = Column(String(32), default="active")
     created_at = Column(DateTime, default=datetime.utcnow)
     product = relationship("Product", backref="expiry_records")
+
+
+class StripeCustomer(Base):
+    """Stripe customer mapping for payment processing.
+    
+    Stores Stripe customer IDs linked to RetailSights users.
+    Enables subscription billing and payment management.
+    """
+    __tablename__ = "stripe_customers"
+    
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, unique=True, index=True)
+    stripe_customer_id = Column(String(255), nullable=False, unique=True, index=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    
+    user = relationship("User", backref="stripe_customer")
+
+
+class PaymentTransaction(Base):
+    """Payment transaction records for audit trail.
+    
+    Stores all payment attempts and outcomes for compliance
+    and customer support purposes.
+    """
+    __tablename__ = "payment_transactions"
+    
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    shop_id = Column(Integer, ForeignKey("shops.id"), nullable=True, index=True)
+    stripe_payment_intent_id = Column(String(255), nullable=True, unique=True)
+    stripe_customer_id = Column(String(255), nullable=True)
+    
+    # Transaction details
+    amount = Column(Integer, nullable=False)  # Amount in pence
+    currency = Column(String(3), default="gbp", nullable=False)
+    status = Column(String(50), nullable=False)  # succeeded, failed, pending, canceled
+    
+    # Payment type
+    payment_type = Column(String(50), nullable=False)  # subscription, one_time, upgrade
+    description = Column(Text, nullable=True)
+    
+    # Timestamps
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
+    completed_at = Column(DateTime, nullable=True)
+    
+    # Relationships
+    user = relationship("User", backref="payment_transactions")
+    shop = relationship("Shop", backref="payment_transactions")
+
+
+class Subscription(Base):
+    """Subscription records for multi-tier plans.
+    
+    Tracks active subscriptions, billing periods, and plan details.
+    Integrated with Stripe for automated billing.
+    """
+    __tablename__ = "subscriptions"
+    
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    shop_id = Column(Integer, ForeignKey("shops.id"), nullable=True, index=True)
+    
+    # Stripe integration
+    stripe_subscription_id = Column(String(255), nullable=True, unique=True, index=True)
+    stripe_customer_id = Column(String(255), nullable=True)
+    stripe_price_id = Column(String(255), nullable=True)
+    
+    # Subscription details
+    plan_name = Column(String(100), nullable=False)  # Starter, Professional, Enterprise
+    status = Column(String(50), nullable=False, index=True)  # active, canceled, past_due, trialing
+    billing_interval = Column(String(20), nullable=False)  # month, year
+    amount = Column(Integer, nullable=False)  # Monthly/annual price in pence
+    
+    # Billing periods
+    current_period_start = Column(DateTime, nullable=True)
+    current_period_end = Column(DateTime, nullable=True)
+    trial_end = Column(DateTime, nullable=True)
+    canceled_at = Column(DateTime, nullable=True)
+    ended_at = Column(DateTime, nullable=True)
+    
+    # Timestamps
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    
+    # Relationships
+    user = relationship("User", backref="subscriptions")
+    shop = relationship("Shop", backref="subscriptions")
+

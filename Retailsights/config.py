@@ -56,6 +56,13 @@ class Config:
     # OpenAI configuration (for AI features)
     OPENAI_API_KEY: Optional[str] = os.getenv("OPENAI_API_KEY")
     
+    # Stripe payment configuration (UK client)
+    STRIPE_SECRET_KEY: Optional[str] = os.getenv("STRIPE_SECRET_KEY")
+    STRIPE_PUBLISHABLE_KEY: Optional[str] = os.getenv("STRIPE_PUBLISHABLE_KEY")
+    STRIPE_WEBHOOK_SECRET: Optional[str] = os.getenv("STRIPE_WEBHOOK_SECRET")
+    STRIPE_CURRENCY: str = os.getenv("STRIPE_CURRENCY", "gbp")  # UK default
+    STRIPE_COUNTRY: str = os.getenv("STRIPE_COUNTRY", "GB")  # United Kingdom
+    
     @classmethod
     def validate(cls) -> None:
         """Validate critical configuration parameters.
