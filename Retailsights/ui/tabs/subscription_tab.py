@@ -9,7 +9,7 @@ from typing import Dict, Any, Optional
 import os
 
 from ...services.subscription_service import SubscriptionService
-from ...services.payment_service import PaymentService
+from ...services.stripe_payment_service import stripe_service, StripePaymentError
 from ...repositories.subscription_repo import SubscriptionRepo
 from ...logger import log as logger
 
@@ -26,13 +26,15 @@ def render_subscription_tab(state=None):
         return
     
     user_id = user['id']
+    user_email = user.get('email', '')
     
     try:
         # Get user's current subscription
         subscription = SubscriptionRepo.get_user_subscription(user_id)
         
         if not subscription:
-            st.error("❌ No subscription found. Please contact support.")
+            # No subscription found - show available plans
+            render_no_subscription_view(user, user_id, user_email)
             return
         
         current_tier = subscription.get('tier', 'basic')
@@ -312,6 +314,147 @@ def process_payment(user_id: int, plan_tier: str, amount: int, billing_type: str
     except Exception as e:
         logger.error(f"Payment processing error: {e}", exc_info=True)
         st.error(f"❌ Payment error: {str(e)}")
+
+
+def render_no_subscription_view(user: dict, user_id: int, user_email: str):
+    """Render view when user has no subscription - show available plans"""
+    
+    st.info("👋 Welcome! Choose a subscription plan to unlock premium features for your retail business.")
+    
+    # Show available plans
+    st.markdown("---")
+    st.subheader("🎯 Choose Your Plan")
+    
+    # Plan comparison
+    plans = {
+        "starter": {
+            "name": "Starter",
+            "price_monthly": 29.99,
+            "price_annual": 299.00,
+            "icon": "🌱",
+            "features": [
+                "✅ Up to 3 shop locations",
+                "✅ Basic analytics dashboard",
+                "✅ Sales & inventory tracking",
+                "✅ Expiry date monitoring",
+                "✅ Email support",
+                "✅ 1GB data storage"
+            ],
+            "recommended": False
+        },
+        "professional": {
+            "name": "Professional",
+            "price_monthly": 79.99,
+            "price_annual": 799.00,
+            "icon": "⭐",
+            "features": [
+                "✅ Up to 10 shop locations",
+                "✅ Advanced analytics & AI insights",
+                "✅ Markdown pricing optimization",
+                "✅ Waste reduction reports",
+                "✅ Custom label printing",
+                "✅ Priority email & chat support",
+                "✅ 10GB data storage",
+                "✅ API access"
+            ],
+            "recommended": True
+        },
+        "enterprise": {
+            "name": "Enterprise",
+            "price_monthly": 199.99,
+            "price_annual": 1999.00,
+            "icon": "🚀",
+            "features": [
+                "✅ Unlimited shop locations",
+                "✅ Enterprise AI analytics",
+                "✅ Multi-store management",
+                "✅ Advanced automation",
+                "✅ Dedicated account manager",
+                "✅ 24/7 phone support",
+                "✅ Unlimited data storage",
+                "✅ Custom integrations",
+                "✅ SLA guarantee"
+            ],
+            "recommended": False
+        }
+    }
+    
+    # Billing interval selector
+    billing_interval = st.radio(
+        "Billing Interval",
+        ["Monthly", "Annual (Save 17%)"],
+        horizontal=True,
+        help="Annual billing includes a 17% discount"
+    )
+    is_annual = "Annual" in billing_interval
+    
+    st.markdown("---")
+    
+    # Display plans in columns
+    cols = st.columns(3)
+    
+    for idx, (plan_key, plan_data) in enumerate(plans.items()):
+        with cols[idx]:
+            # Plan card
+            if plan_data["recommended"]:
+                st.success("⭐ RECOMMENDED FOR YOU")
+            
+            st.markdown(f"## {plan_data['icon']} {plan_data['name']}")
+            
+            # Price display
+            if is_annual:
+                price = plan_data['price_annual']
+                price_per_month = price / 12
+                st.markdown(f"### £{price:.2f}/year")
+                st.caption(f"£{price_per_month:.2f}/month")
+            else:
+                price = plan_data['price_monthly']
+                st.markdown(f"### £{price:.2f}/month")
+            
+            st.markdown("---")
+            
+            # Features
+            for feature in plan_data['features']:
+                st.markdown(feature)
+            
+            st.markdown("---")
+            
+            # Subscribe button
+            button_type = "primary" if plan_data["recommended"] else "secondary"
+            if st.button(f"Choose {plan_data['name']}", key=f"choose_{plan_key}", type=button_type, use_container_width=True):
+                handle_plan_selection(user, plan_key, plan_data, is_annual, user_email)
+    
+    # Additional info
+    st.markdown("---")
+    st.info("💯 **30-Day Money-Back Guarantee** · Cancel anytime · No hidden fees · Secure payment via Stripe")
+    
+    # FAQ
+    with st.expander("❓ Frequently Asked Questions"):
+        st.markdown("""
+        **Can I change plans later?**  
+        Yes! You can upgrade or downgrade at any time.
+        
+        **What payment methods do you accept?**  
+        Credit/debit cards, Apple Pay, Google Pay via Stripe.
+        
+        **Is there a free trial?**  
+        Contact sales for enterprise trial options.
+        
+        **Is my payment secure?**  
+        Yes! All payments are processed securely via Stripe with PCI-DSS compliance.
+        """)
+
+
+def handle_plan_selection(user: dict, plan_key: str, plan_data: dict, is_annual: bool, user_email: str):
+    """Handle when user selects a plan"""
+    
+    st.session_state['selected_plan'] = {
+        'plan_key': plan_key,
+        'plan_data': plan_data,
+        'is_annual': is_annual,
+        'user_email': user_email
+    }
+    st.rerun()
 
 
 def render_faq():
