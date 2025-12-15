@@ -20,6 +20,8 @@ boto3
 prophet
 celery
 redis
+redis-om
+hiredis
 openai
 sendgrid
 twilio
