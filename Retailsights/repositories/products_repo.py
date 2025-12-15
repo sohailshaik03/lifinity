@@ -34,11 +34,19 @@ def create_product(
 
 
 @st.cache_data(ttl=300, show_spinner=False)  # Cache for 5 minutes
-def get_products_by_shop(shop_id: int) -> List[Dict[str, Any]]:
+def get_products_by_shop(shop_id: int, limit: int = None, offset: int = 0) -> List[Dict[str, Any]]:
+    """
+    Get products for a shop with optional pagination.
+    
+    Args:
+        shop_id: Shop ID
+        limit: Max number of products to return (None = all)
+        offset: Number of products to skip
+    """
     session = get_session()
     try:
         # Optimized query - join with aggregated stock in single query
-        products_with_stock = (
+        query = (
             session.query(
                 Product.id,
                 Product.name,
@@ -51,8 +59,13 @@ def get_products_by_shop(shop_id: int) -> List[Dict[str, Any]]:
             .filter(Product.shop_id == shop_id)
             .group_by(Product.id, Product.name, Product.sku, Product.default_cost, Product.created_at)
             .order_by(Product.name)
-            .all()
         )
+        
+        # Apply pagination if specified
+        if limit is not None:
+            query = query.limit(limit).offset(offset)
+        
+        products_with_stock = query.all()
         
         result: List[Dict[str, Any]] = []
         for row in products_with_stock:
@@ -68,6 +81,20 @@ def get_products_by_shop(shop_id: int) -> List[Dict[str, Any]]:
     except Exception as e:
         logger.error(f"get_products_by_shop error: {e}")
         return []
+    finally:
+        session.close()
+
+
+@st.cache_data(ttl=300, show_spinner=False)
+def get_products_count(shop_id: int) -> int:
+    """Get total count of products for a shop."""
+    session = get_session()
+    try:
+        count = session.query(func.count(Product.id)).filter(Product.shop_id == shop_id).scalar()
+        return count or 0
+    except Exception as e:
+        logger.error(f"get_products_count error: {e}")
+        return 0
     finally:
         session.close()
 
