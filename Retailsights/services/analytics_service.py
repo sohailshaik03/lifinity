@@ -528,6 +528,6 @@ def load_sales_for_period(
     """
     Thin wrapper so tabs can simply import:
 
-        from services.analytics_service import load_sales_for_period
+        from Retailsights.services.analytics_service import load_sales_for_period
     """
     return AnalyticsService.load_sales_for_period(shop_id, start_dt, end_dt)

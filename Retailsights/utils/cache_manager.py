@@ -98,7 +98,7 @@ class CacheManager:
                         port = int(redis_url.split(":")[1]) if ":" in redis_url else 6379
                         password = os.getenv("REDIS_PASSWORD")
                         
-                        self.redis_client = Redis(
+                        self.redis_client = redis.Redis(
                             host=host,
                             port=port,
                             password=password,

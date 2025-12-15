@@ -243,13 +243,13 @@ def render_yellow_sticker_tab(state) -> None:
                                     if st.button("✅ Apply Discount & Print"):
                                         # Decrement stock by qty and generate label
                                         try:
-                                            from repositories.markdown_sales_repo import record_markdown_sale
+                                            from Retailsights.repositories.markdown_sales_repo import record_markdown_sale
                                             products = get_products_by_shop(shop_id)
                                             product = next((p for p in products if p["sku"] == barcode_input), None)
                                             if product and decrement_expiring_stock(product["id"], qty):
                                                 st.success(f"Reduced stock by {qty}")
                                                 # Generate label
-                                                from repositories.products_repo import get_expiring_products
+                                                from Retailsights.repositories.products_repo import get_expiring_products
                                                 expiring = get_expiring_products(shop_id, days_threshold=30)
                                                 expiry_record = next((e for e in expiring if e["product_id"] == product["id"]), None)
                                                 if expiry_record:
@@ -320,7 +320,7 @@ def render_yellow_sticker_tab(state) -> None:
                                         product = next((p for p in products if p["sku"] == barcode_input), None)
                                         
                                         if product:
-                                            from repositories.products_repo import get_expiring_products
+                                            from Retailsights.repositories.products_repo import get_expiring_products
                                             expiring = get_expiring_products(shop_id, days_threshold=30)
                                             expiry_record = next(
                                                 (e for e in expiring if e["product_id"] == product["id"]),

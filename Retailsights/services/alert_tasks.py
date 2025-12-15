@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from services.celery_app import celery_app
-from repositories.alerts_repo import (
+from Retailsights.services.celery_app import celery_app
+from Retailsights.repositories.alerts_repo import (
     create_alert_notification,
     mark_alert_sent,
     get_pending_alerts,
     get_alert_settings,
 )
-from services.notification_service import EmailService, SMSService, AlertTemplates
-from repositories.products_repo import get_expiring_products
+from Retailsights.services.notification_service import EmailService, SMSService, AlertTemplates
+from Retailsights.repositories.products_repo import get_expiring_products
 from logger import logger
 from datetime import datetime
 

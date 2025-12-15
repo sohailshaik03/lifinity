@@ -13,7 +13,7 @@ if __name__ == "__main__":
 from .db import get_session
 from .logger import logger
 from .models import User
-from utils.validation import validate_email
+from Retailsights.utils.validation import validate_email
 
 def prompt_non_empty(prompt: str) -> str:
     while True:

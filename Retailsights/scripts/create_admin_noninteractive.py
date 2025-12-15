@@ -5,7 +5,7 @@ import sys
 import os
 # Ensure project package path is on sys.path for local imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from utils.security import hash_password
+from Retailsights.utils.security import hash_password
 
 # Load .env
 load_dotenv('Retailsights/.env')

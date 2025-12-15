@@ -379,7 +379,7 @@ class LabelService:
             Dict with product info and discount, or None if not found/not expiring
         """
         try:
-            from repositories.products_repo import get_products_by_shop
+            from Retailsights.repositories.products_repo import get_products_by_shop
 
             # Find product by SKU
             products = get_products_by_shop(shop_id)
