@@ -56,6 +56,22 @@ def get_products_by_shop(shop_id: int) -> List[Dict[str, Any]]:
         
         result: List[Dict[str, Any]] = []
         for row in products_with_stock:
+            result.append({
+                "id": row.id,
+                "name": row.name,
+                "sku": row.sku,
+                "cost_price": row.default_cost,
+                "current_stock": row.current_stock,
+                "created_at": row.created_at,
+            })
+        return result
+    except Exception as e:
+        logger.error(f"get_products_by_shop error: {e}")
+        return []
+    finally:
+        session.close()
+
+
 @st.cache_data(ttl=60, show_spinner=False)  # Cache for 1 minute
 def get_expiring_products(shop_id: int, days_threshold: int = 30) -> List[Dict[str, Any]]:
     """Get products expiring within days_threshold."""
