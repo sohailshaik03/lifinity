@@ -35,6 +35,18 @@ from .ui.tabs.subscription_tab import render_subscription_tab
 
 def initialize_session_state():
     """Initialize session state variables to prevent loss on refresh."""
+    # Check if user just logged out - don't restore session if so
+    if st.session_state.get("_just_logged_out"):
+        # Clear the flag and don't restore session
+        if "_just_logged_out" in st.session_state:
+            del st.session_state["_just_logged_out"]
+        # Ensure auth is False
+        st.session_state["is_authenticated"] = False
+        st.session_state["auth_user"] = None
+        if "current_shop" not in st.session_state:
+            st.session_state["current_shop"] = None
+        return
+    
     # Always try to restore session first before initializing to False
     session_restored = False
     

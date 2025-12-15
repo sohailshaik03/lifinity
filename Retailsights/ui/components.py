@@ -19,17 +19,21 @@ def show_top_bar(user: dict | None):
 
 def show_logout_button():
     if st.sidebar.button("Logout"):
+        # Set flag to prevent session restoration
+        st.session_state["_just_logged_out"] = True
+        
         # Clear session state
         keys_to_clear = [
             "auth_user", "is_authenticated", "current_shop",
             "_persistent_user_id", "_persistent_user_email", 
-            "_persistent_user_name", "_persistent_user_role"
+            "_persistent_user_name", "_persistent_user_role",
+            "_db_initialized", "current_page"
         ]
         for key in keys_to_clear:
             if key in st.session_state:
                 del st.session_state[key]
         
-        # Clear cookies
+        # Clear cookies and persistent storage
         try:
             from Retailsights.utils.session_manager import SessionManager
             session_mgr = SessionManager()
