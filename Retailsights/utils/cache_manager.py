@@ -18,11 +18,11 @@ from loguru import logger
 # Try to import Redis
 try:
     import redis
-    from redis import Redis
+    from redis import Redis as RedisClient
     REDIS_AVAILABLE = True
 except ImportError:
     REDIS_AVAILABLE = False
-    Redis = None
+    RedisClient = None
 
 # Try to import requests for Upstash REST API
 try:
@@ -55,7 +55,7 @@ class CacheManager:
     
     def __init__(self):
         """Initialize cache manager with Redis/Upstash if available"""
-        self.redis_client: Optional[Redis] = None
+        self.redis_client: Optional[RedisClient] = None
         self.upstash_rest_url: Optional[str] = None
         self.upstash_rest_token: Optional[str] = None
         self.use_redis = False
