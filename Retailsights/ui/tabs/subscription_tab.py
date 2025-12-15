@@ -395,104 +395,110 @@ def render_no_subscription_view(user: dict, user_id: int, user_email: str):
     }
     
     # Display plans in columns with equal height cards
-    cols = st.columns(3)
+    cols = st.columns(3, gap="medium")
     
     for idx, (plan_key, plan_data) in enumerate(plans.items()):
         with cols[idx]:
-            # Card container with custom styling
-            card_style = f"""
-                <div style="
-                    border: 2px solid {plan_data['color']};
-                    border-radius: 12px;
-                    padding: 24px;
-                    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.95) 100%);
-                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                    height: 100%;
-                    position: relative;
-                ">
-            """
-            
-            # Recommended badge
-            if plan_data["recommended"]:
+            # Use Streamlit container for consistent styling
+            with st.container():
+                # Recommended badge with fixed height
+                if plan_data["recommended"]:
+                    st.markdown(f"""
+                        <div style="
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            color: white;
+                            padding: 8px 16px;
+                            border-radius: 20px;
+                            text-align: center;
+                            font-weight: bold;
+                            font-size: 13px;
+                            margin-bottom: 12px;
+                            height: 34px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        ">
+                            ⭐ RECOMMENDED
+                        </div>
+                    """, unsafe_allow_html=True)
+                else:
+                    st.markdown("<div style='height: 46px; margin-bottom: 12px;'></div>", unsafe_allow_html=True)
+                
+                # Card with border
                 st.markdown(f"""
                     <div style="
-                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                        color: white;
-                        padding: 8px 16px;
-                        border-radius: 20px;
-                        text-align: center;
-                        font-weight: bold;
-                        font-size: 14px;
-                        margin-bottom: 16px;
+                        border: 3px solid {plan_data['color']};
+                        border-radius: 16px;
+                        padding: 28px 24px;
+                        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(250,250,250,0.98) 100%);
+                        box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+                        min-height: 650px;
                     ">
-                        ⭐ RECOMMENDED
-                    </div>
                 """, unsafe_allow_html=True)
-            else:
-                st.markdown("<div style='height: 46px;'></div>", unsafe_allow_html=True)
-            
-            # Plan icon and name
-            st.markdown(f"""
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <div style="font-size: 48px; margin-bottom: 10px;">{plan_data['icon']}</div>
-                    <h2 style="margin: 0; color: {plan_data['color']};">{plan_data['name']}</h2>
-                </div>
-            """, unsafe_allow_html=True)
-            
-            # Price display
-            if is_annual:
-                price = plan_data['price_annual']
-                price_per_month = price / 12
+                
+                # Plan icon and name
                 st.markdown(f"""
-                    <div style="text-align: center; margin: 20px 0;">
-                        <div style="font-size: 36px; font-weight: bold; color: {plan_data['color']};">
-                            £{price:.0f}
-                        </div>
-                        <div style="font-size: 14px; color: #666; margin-top: 4px;">
-                            per year
-                        </div>
-                        <div style="font-size: 12px; color: #999; margin-top: 4px;">
-                            (£{price_per_month:.2f}/month)
-                        </div>
+                    <div style="text-align: center; margin-bottom: 24px;">
+                        <div style="font-size: 56px; margin-bottom: 12px; line-height: 1;">{plan_data['icon']}</div>
+                        <h2 style="margin: 0; color: {plan_data['color']}; font-size: 28px; font-weight: 700;">{plan_data['name']}</h2>
                     </div>
                 """, unsafe_allow_html=True)
-            else:
-                price = plan_data['price_monthly']
-                st.markdown(f"""
-                    <div style="text-align: center; margin: 20px 0;">
-                        <div style="font-size: 36px; font-weight: bold; color: {plan_data['color']};">
-                            £{price:.2f}
+                
+                # Price display with fixed height
+                if is_annual:
+                    price = plan_data['price_annual']
+                    price_per_month = price / 12
+                    st.markdown(f"""
+                        <div style="text-align: center; margin: 24px 0; height: 110px; display: flex; flex-direction: column; justify-content: center;">
+                            <div style="font-size: 42px; font-weight: 800; color: {plan_data['color']}; line-height: 1;">
+                                £{price:.0f}
+                            </div>
+                            <div style="font-size: 15px; color: #666; margin-top: 6px; font-weight: 500;">
+                                per year
+                            </div>
+                            <div style="font-size: 13px; color: #999; margin-top: 4px;">
+                                (£{price_per_month:.2f}/month)
+                            </div>
                         </div>
-                        <div style="font-size: 14px; color: #666; margin-top: 4px;">
-                            per month
+                    """, unsafe_allow_html=True)
+                else:
+                    price = plan_data['price_monthly']
+                    st.markdown(f"""
+                        <div style="text-align: center; margin: 24px 0; height: 110px; display: flex; flex-direction: column; justify-content: center;">
+                            <div style="font-size: 42px; font-weight: 800; color: {plan_data['color']}; line-height: 1;">
+                                £{price:.2f}
+                            </div>
+                            <div style="font-size: 15px; color: #666; margin-top: 6px; font-weight: 500;">
+                                per month
+                            </div>
                         </div>
-                    </div>
-                """, unsafe_allow_html=True)
-            
-            st.markdown("<hr style='margin: 20px 0; border: 1px solid #e0e0e0;'>", unsafe_allow_html=True)
-            
-            # Features list
-            st.markdown("<div style='text-align: left; min-height: 280px;'>", unsafe_allow_html=True)
-            for feature in plan_data['features']:
-                st.markdown(f"""
-                    <div style="margin: 10px 0; padding-left: 4px;">
-                        <span style="color: {plan_data['color']}; font-size: 16px;">✓</span>
-                        <span style="margin-left: 8px; font-size: 14px;">{feature}</span>
-                    </div>
-                """, unsafe_allow_html=True)
-            st.markdown("</div>", unsafe_allow_html=True)
-            
-            st.markdown("<hr style='margin: 20px 0; border: 1px solid #e0e0e0;'>", unsafe_allow_html=True)
-            
-            # Subscribe button
-            button_type = "primary" if plan_data["recommended"] else "secondary"
-            if st.button(
-                f"Choose {plan_data['name']}", 
-                key=f"choose_{plan_key}", 
-                type=button_type, 
-                use_container_width=True
-            ):
-                handle_plan_selection(user, plan_key, plan_data, is_annual, user_email)
+                    """, unsafe_allow_html=True)
+                
+                st.markdown("<hr style='margin: 20px 0; border: none; border-top: 2px solid #e8e8e8;'>", unsafe_allow_html=True)
+                
+                # Features list with fixed height
+                st.markdown("<div style='min-height: 280px; max-height: 280px; overflow-y: auto;'>", unsafe_allow_html=True)
+                for feature in plan_data['features']:
+                    st.markdown(f"""
+                        <div style="margin: 12px 0; padding-left: 4px; display: flex; align-items: flex-start;">
+                            <span style="color: {plan_data['color']}; font-size: 18px; margin-right: 10px; flex-shrink: 0;">✓</span>
+                            <span style="font-size: 14px; color: #333; line-height: 1.5;">{feature}</span>
+                        </div>
+                    """, unsafe_allow_html=True)
+                st.markdown("</div>", unsafe_allow_html=True)
+                
+                st.markdown("</div>", unsafe_allow_html=True)
+                
+                # Button outside the card for better alignment
+                st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
+                button_type = "primary" if plan_data["recommended"] else "secondary"
+                if st.button(
+                    f"Choose {plan_data['name']}", 
+                    key=f"choose_{plan_key}", 
+                    type=button_type, 
+                    use_container_width=True
+                ):
+                    handle_plan_selection(user, plan_key, plan_data, is_annual, user_email)
     
     # Additional info
     st.markdown("<br><br>", unsafe_allow_html=True)
