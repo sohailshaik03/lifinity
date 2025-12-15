@@ -319,23 +319,19 @@ def process_payment(user_id: int, plan_tier: str, amount: int, billing_type: str
 def render_no_subscription_view(user: dict, user_id: int, user_email: str):
     """Render view when user has no subscription - show available plans"""
     
-    st.info("👋 Welcome! Choose a subscription plan to unlock premium features for your retail business.")
+    st.subheader("📋 Choose Your Subscription Plan")
     
-    st.markdown("<br>", unsafe_allow_html=True)
-    
-    # Billing interval selector - centered
-    col_left, col_center, col_right = st.columns([1, 2, 1])
-    with col_center:
-        billing_interval = st.radio(
-            "Select Billing Interval",
-            ["Monthly", "Annual (Save 17%)"],
-            horizontal=True,
-            help="Annual billing includes a 17% discount"
-        )
+    # Billing interval selector
+    billing_interval = st.radio(
+        "Billing Interval:",
+        ["Monthly", "Annual (Save 17%)"],
+        horizontal=True,
+        help="Annual billing includes a 17% discount"
+    )
     
     is_annual = "Annual" in billing_interval
     
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.divider()
     
     # Plan comparison
     plans = {
@@ -344,7 +340,6 @@ def render_no_subscription_view(user: dict, user_id: int, user_email: str):
             "price_monthly": 29.99,
             "price_annual": 299.00,
             "icon": "🌱",
-            "color": "#4CAF50",
             "features": [
                 "Up to 3 shop locations",
                 "Basic analytics dashboard",
@@ -360,7 +355,6 @@ def render_no_subscription_view(user: dict, user_id: int, user_email: str):
             "price_monthly": 79.99,
             "price_annual": 799.00,
             "icon": "⭐",
-            "color": "#2196F3",
             "features": [
                 "Up to 10 shop locations",
                 "Advanced analytics & AI insights",
@@ -378,7 +372,6 @@ def render_no_subscription_view(user: dict, user_id: int, user_email: str):
             "price_monthly": 199.99,
             "price_annual": 1999.00,
             "icon": "🚀",
-            "color": "#9C27B0",
             "features": [
                 "Unlimited shop locations",
                 "Enterprise AI analytics",
@@ -394,180 +387,80 @@ def render_no_subscription_view(user: dict, user_id: int, user_email: str):
         }
     }
     
-    # Display plans in columns with equal height cards
-    cols = st.columns(3, gap="medium")
+    # Display plans in columns
+    cols = st.columns(3)
     
     for idx, (plan_key, plan_data) in enumerate(plans.items()):
         with cols[idx]:
-            # Use Streamlit container for consistent styling
-            with st.container():
-                # Recommended badge with fixed height
-                if plan_data["recommended"]:
-                    st.markdown(f"""
-                        <div style="
-                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                            color: white;
-                            padding: 8px 16px;
-                            border-radius: 20px;
-                            text-align: center;
-                            font-weight: bold;
-                            font-size: 13px;
-                            margin-bottom: 12px;
-                            height: 34px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                        ">
-                            ⭐ RECOMMENDED
-                        </div>
-                    """, unsafe_allow_html=True)
-                else:
-                    st.markdown("<div style='height: 46px; margin-bottom: 12px;'></div>", unsafe_allow_html=True)
-                
-                # Card with border
-                st.markdown(f"""
-                    <div style="
-                        border: 3px solid {plan_data['color']};
-                        border-radius: 16px;
-                        padding: 28px 24px;
-                        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(250,250,250,0.98) 100%);
-                        box-shadow: 0 8px 16px rgba(0,0,0,0.08);
-                        min-height: 650px;
-                    ">
-                """, unsafe_allow_html=True)
-                
-                # Plan icon and name
-                st.markdown(f"""
-                    <div style="text-align: center; margin-bottom: 24px;">
-                        <div style="font-size: 56px; margin-bottom: 12px; line-height: 1;">{plan_data['icon']}</div>
-                        <h2 style="margin: 0; color: {plan_data['color']}; font-size: 28px; font-weight: 700;">{plan_data['name']}</h2>
-                    </div>
-                """, unsafe_allow_html=True)
-                
-                # Price display with fixed height
-                if is_annual:
-                    price = plan_data['price_annual']
-                    price_per_month = price / 12
-                    st.markdown(f"""
-                        <div style="text-align: center; margin: 24px 0; height: 110px; display: flex; flex-direction: column; justify-content: center;">
-                            <div style="font-size: 42px; font-weight: 800; color: {plan_data['color']}; line-height: 1;">
-                                £{price:.0f}
-                            </div>
-                            <div style="font-size: 15px; color: #666; margin-top: 6px; font-weight: 500;">
-                                per year
-                            </div>
-                            <div style="font-size: 13px; color: #999; margin-top: 4px;">
-                                (£{price_per_month:.2f}/month)
-                            </div>
-                        </div>
-                    """, unsafe_allow_html=True)
-                else:
-                    price = plan_data['price_monthly']
-                    st.markdown(f"""
-                        <div style="text-align: center; margin: 24px 0; height: 110px; display: flex; flex-direction: column; justify-content: center;">
-                            <div style="font-size: 42px; font-weight: 800; color: {plan_data['color']}; line-height: 1;">
-                                £{price:.2f}
-                            </div>
-                            <div style="font-size: 15px; color: #666; margin-top: 6px; font-weight: 500;">
-                                per month
-                            </div>
-                        </div>
-                    """, unsafe_allow_html=True)
-                
-                st.markdown("<hr style='margin: 20px 0; border: none; border-top: 2px solid #e8e8e8;'>", unsafe_allow_html=True)
-                
-                # Features list with fixed height
-                st.markdown("<div style='min-height: 280px; max-height: 280px; overflow-y: auto;'>", unsafe_allow_html=True)
-                for feature in plan_data['features']:
-                    st.markdown(f"""
-                        <div style="margin: 12px 0; padding-left: 4px; display: flex; align-items: flex-start;">
-                            <span style="color: {plan_data['color']}; font-size: 18px; margin-right: 10px; flex-shrink: 0;">✓</span>
-                            <span style="font-size: 14px; color: #333; line-height: 1.5;">{feature}</span>
-                        </div>
-                    """, unsafe_allow_html=True)
-                st.markdown("</div>", unsafe_allow_html=True)
-                
-                st.markdown("</div>", unsafe_allow_html=True)
-                
-                # Button outside the card for better alignment
-                st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
-                button_type = "primary" if plan_data["recommended"] else "secondary"
-                if st.button(
-                    f"Choose {plan_data['name']}", 
-                    key=f"choose_{plan_key}", 
-                    type=button_type, 
-                    use_container_width=True
-                ):
-                    handle_plan_selection(user, plan_key, plan_data, is_annual, user_email)
+            # Recommended badge
+            if plan_data["recommended"]:
+                st.info("⭐ **RECOMMENDED**")
+            else:
+                st.markdown("")
+            
+            # Plan header
+            st.markdown(f"### {plan_data['icon']} {plan_data['name']}")
+            
+            # Price
+            if is_annual:
+                price = plan_data['price_annual']
+                price_per_month = price / 12
+                st.metric(label="Annual Price", value=f"£{price:.0f}/year")
+                st.caption(f"£{price_per_month:.2f} per month")
+            else:
+                price = plan_data['price_monthly']
+                st.metric(label="Monthly Price", value=f"£{price:.2f}/mo")
+            
+            st.markdown("---")
+            
+            # Features
+            st.markdown("**Features:**")
+            for feature in plan_data['features']:
+                st.markdown(f"✓ {feature}")
+            
+            st.markdown("---")
+            
+            # Subscribe button
+            button_type = "primary" if plan_data["recommended"] else "secondary"
+            if st.button(
+                f"Choose {plan_data['name']}", 
+                key=f"choose_{plan_key}", 
+                type=button_type, 
+                use_container_width=True
+            ):
+                handle_plan_selection(user, plan_key, plan_data, is_annual, user_email)
     
-    # Additional info
-    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.divider()
     
-    # Trust badges
-    col1, col2, col3, col4 = st.columns(4)
+    # Simple info footer
+    col1, col2, col3 = st.columns(3)
     with col1:
-        st.markdown("""
-            <div style="text-align: center; padding: 16px;">
-                <div style="font-size: 32px;">💯</div>
-                <div style="font-size: 12px; font-weight: bold; margin-top: 8px;">30-Day Money-Back</div>
-            </div>
-        """, unsafe_allow_html=True)
+        st.info("💯 30-Day Money-Back Guarantee")
     with col2:
-        st.markdown("""
-            <div style="text-align: center; padding: 16px;">
-                <div style="font-size: 32px;">🔒</div>
-                <div style="font-size: 12px; font-weight: bold; margin-top: 8px;">Secure Payment</div>
-            </div>
-        """, unsafe_allow_html=True)
+        st.info("🔒 Secure Payment via Stripe")
     with col3:
-        st.markdown("""
-            <div style="text-align: center; padding: 16px;">
-                <div style="font-size: 32px;">⚡</div>
-                <div style="font-size: 12px; font-weight: bold; margin-top: 8px;">Instant Activation</div>
-            </div>
-        """, unsafe_allow_html=True)
-    with col4:
-        st.markdown("""
-            <div style="text-align: center; padding: 16px;">
-                <div style="font-size: 32px;">🎯</div>
-                <div style="font-size: 12px; font-weight: bold; margin-top: 8px;">No Hidden Fees</div>
-            </div>
-        """, unsafe_allow_html=True)
+        st.info("⚡ Instant Activation")
     
-    st.markdown("<br>", unsafe_allow_html=True)
-    
-    # FAQ
+    # Simple FAQ
     with st.expander("❓ Frequently Asked Questions"):
-        col1, col2 = st.columns(2)
+        st.markdown("""
+        **Can I change plans later?**  
+        Yes! You can upgrade or downgrade at any time.
         
-        with col1:
-            st.markdown("""
-            **Can I change plans later?**  
-            Yes! You can upgrade or downgrade at any time. Changes take effect immediately.
-            
-            **What payment methods do you accept?**  
-            We accept all major credit/debit cards, Apple Pay, and Google Pay via Stripe.
-            
-            **Is there a free trial?**  
-            Contact our sales team for enterprise trial options.
-            """)
+        **What payment methods do you accept?**  
+        Credit/debit cards, Apple Pay, and Google Pay via Stripe.
         
-        with col2:
-            st.markdown("""
-            **Is my payment secure?**  
-            Absolutely! All payments are processed securely via Stripe with PCI-DSS compliance and 3D Secure authentication.
-            
-            **Can I cancel anytime?**  
-            Yes, you can cancel your subscription at any time with no penalties.
-            
-            **Do you offer refunds?**  
-            Yes! We offer a 30-day money-back guarantee on all plans.
-            """)
+        **Is my payment secure?**  
+        Yes! All payments are processed securely via Stripe with PCI-DSS compliance.
+        
+        **Can I cancel anytime?**  
+        Yes, cancel anytime with no penalties.
+        
+        **Do you offer refunds?**  
+        30-day money-back guarantee on all plans.
+        """)
     
-    # Support contact
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.info("💬 Need help choosing? Contact our sales team at **sales@retailsight.com** or chat with us below.")
-
+    st.info("💬 Need help? Contact **sales@retailsight.com**")
 
 
 def handle_plan_selection(user: dict, plan_key: str, plan_data: dict, is_annual: bool, user_email: str):
