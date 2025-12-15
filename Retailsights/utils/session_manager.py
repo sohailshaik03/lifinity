@@ -150,21 +150,24 @@ class SessionManager:
     
     def clear_session(self):
         """Clear all session data"""
+        # Clear cookies FIRST if available
+        if self.cookie_manager:
+            try:
+                self.cookie_manager.delete("auth_token", key="delete_auth_token")
+                self.cookie_manager.delete("user_id", key="delete_user_id")
+                self.cookie_manager.delete("user_email", key="delete_user_email")
+            except Exception:
+                pass
+        
         # Clear session state
         for key in ["_persistent_user_id", "_persistent_user_email", "_persistent_user_name", "_persistent_user_role"]:
             if key in st.session_state:
                 del st.session_state[key]
         
-        # Clear cookies if available
-        if not self.cookie_manager:
-            return
-            
-        try:
-            self.cookie_manager.delete("auth_token")
-            self.cookie_manager.delete("user_id")
-            self.cookie_manager.delete("user_email")
-        except Exception:
-            pass
+        # Clear auth state
+        for key in ["auth_user", "is_authenticated", "current_shop"]:
+            if key in st.session_state:
+                del st.session_state[key]
     
     def is_session_valid(self) -> bool:
         """Check if there's a valid session"""

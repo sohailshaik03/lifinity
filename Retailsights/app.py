@@ -52,9 +52,7 @@ def initialize_session_state() -> None:
     """
     # Check if user just logged out - don't restore session if so
     if st.session_state.get("_just_logged_out"):
-        # Clear the flag and don't restore session
-        if "_just_logged_out" in st.session_state:
-            del st.session_state["_just_logged_out"]
+        # Keep the flag for this session to prevent restoration
         # Ensure auth is False
         st.session_state["is_authenticated"] = False
         st.session_state["auth_user"] = None

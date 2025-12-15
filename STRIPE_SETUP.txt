@@ -1,0 +1,241 @@
+╔════════════════════════════════════════════════════════════════════════╗
+║                    STRIPE SETUP GUIDE - STEP BY STEP                   ║
+║                         For London Client Project                      ║
+╚════════════════════════════════════════════════════════════════════════╝
+
+📋 COMPLETE SETUP IN 15 MINUTES
+
+════════════════════════════════════════════════════════════════════════
+STEP 1: CREATE STRIPE ACCOUNT
+════════════════════════════════════════════════════════════════════════
+
+1. Go to: https://stripe.com/gb
+2. Click "Sign up" (top right)
+3. Enter your business details:
+   - Email address
+   - Business name: RetailSight (or your client's name)
+   - Country: United Kingdom
+   - Business type: Software/SaaS
+4. Verify your email
+5. Complete business verification (for live payments)
+
+⏱️ Time: 5 minutes
+
+════════════════════════════════════════════════════════════════════════
+STEP 2: GET YOUR API KEYS
+════════════════════════════════════════════════════════════════════════
+
+1. Log in to Stripe Dashboard: https://dashboard.stripe.com
+2. Click "Developers" (top right)
+3. Click "API keys"
+4. You'll see two keys:
+   
+   📌 TEST MODE (for development):
+   - Publishable key: pk_test_xxxxxxxxxxxxx
+   - Secret key: sk_test_xxxxxxxxxxxxx
+   
+   📌 LIVE MODE (for production):
+   - Publishable key: pk_live_xxxxxxxxxxxxx
+   - Secret key: sk_live_xxxxxxxxxxxxx
+
+⚠️ START WITH TEST MODE FIRST!
+
+5. Click "Reveal test key" to see the secret key
+6. Copy both keys
+
+⏱️ Time: 2 minutes
+
+════════════════════════════════════════════════════════════════════════
+STEP 3: ADD KEYS TO YOUR .ENV FILE
+════════════════════════════════════════════════════════════════════════
+
+1. Open file: Retailsights\.env
+2. Add these lines at the bottom:
+
+
+3. Replace "your_key_here" with your actual keys from Step 2
+4. Save the file
+
+⚠️ NEVER commit .env to GitHub! (it's in .gitignore)
+
+⏱️ Time: 2 minutes
+
+════════════════════════════════════════════════════════════════════════
+STEP 4: CREATE PRODUCTS IN STRIPE DASHBOARD
+════════════════════════════════════════════════════════════════════════
+
+1. In Stripe Dashboard, click "Products" (left menu)
+2. Click "+ Add Product"
+
+🌱 CREATE STARTER PLAN:
+   - Name: RetailSight Starter
+   - Description: Basic plan for small retail businesses
+   - Pricing model: Recurring
+   - Price: £29.99 GBP
+   - Billing period: Monthly
+   - Click "Add pricing" → Add another:
+     * Price: £299.00 GBP
+     * Billing period: Yearly
+   - Click "Save product"
+
+⭐ CREATE PROFESSIONAL PLAN:
+   - Name: RetailSight Professional
+   - Description: Advanced features for growing businesses
+   - Pricing model: Recurring
+   - Price: £79.99 GBP
+   - Billing period: Monthly
+   - Click "Add pricing" → Add another:
+     * Price: £799.00 GBP
+     * Billing period: Yearly
+   - Click "Save product"
+
+🚀 CREATE ENTERPRISE PLAN:
+   - Name: RetailSight Enterprise
+   - Description: Full-featured plan for large operations
+   - Pricing model: Recurring
+   - Price: £199.99 GBP
+   - Billing period: Monthly
+   - Click "Add pricing" → Add another:
+     * Price: £1999.00 GBP
+     * Billing period: Yearly
+   - Click "Save product"
+
+⏱️ Time: 5 minutes
+
+════════════════════════════════════════════════════════════════════════
+STEP 5: TEST WITH TEST CARDS
+════════════════════════════════════════════════════════════════════════
+
+Stripe provides test cards for testing payments:
+
+✅ SUCCESSFUL PAYMENT:
+   Card number: 4242 4242 4242 4242
+   Expiry: Any future date (e.g., 12/34)
+   CVC: Any 3 digits (e.g., 123)
+   ZIP: Any 5 digits (e.g., 12345)
+
+❌ DECLINED PAYMENT:
+   Card number: 4000 0000 0000 0002
+   (Use this to test error handling)
+
+🔐 REQUIRES 3D SECURE:
+   Card number: 4000 0027 6000 3184
+   (Tests 3D Secure authentication)
+
+💳 MORE TEST CARDS:
+   https://stripe.com/docs/testing#cards
+
+⏱️ Time: 1 minute to test
+
+════════════════════════════════════════════════════════════════════════
+STEP 6: RUN YOUR APPLICATION
+════════════════════════════════════════════════════════════════════════
+
+1. Open PowerShell/Terminal
+2. Navigate to project:
+   cd C:\Users\Minfy\Desktop\lifinity\Retailsights
+
+3. Run Streamlit:
+   streamlit run app.py
+
+4. Open browser: http://localhost:8501
+5. Go to Subscription tab
+6. Select a plan
+7. Click "Choose Plan"
+8. Use test card: 4242 4242 4242 4242
+9. Complete payment
+
+✅ You should see: "Payment Successful!"
+
+════════════════════════════════════════════════════════════════════════
+OPTIONAL: WEBHOOK SETUP (For Production)
+════════════════════════════════════════════════════════════════════════
+
+Webhooks notify your app when payments succeed/fail.
+
+🧪 FOR LOCAL TESTING:
+1. Install Stripe CLI:
+   https://stripe.com/docs/stripe-cli
+2. Run: stripe login
+3. Run: stripe listen --forward-to localhost:8501/webhook
+4. Copy webhook signing secret (whsec_xxx)
+5. Add to .env: STRIPE_WEBHOOK_SECRET=whsec_xxx
+
+🌐 FOR PRODUCTION:
+1. In Stripe Dashboard: Developers → Webhooks
+2. Click "Add endpoint"
+3. URL: https://your-app.com/webhook
+4. Events to listen: 
+   - payment_intent.succeeded
+   - payment_intent.payment_failed
+   - customer.subscription.created
+   - customer.subscription.updated
+   - customer.subscription.deleted
+5. Copy webhook secret
+6. Add to production .env
+
+════════════════════════════════════════════════════════════════════════
+GOING LIVE (Production)
+════════════════════════════════════════════════════════════════════════
+
+When ready for real payments:
+
+1. Complete Stripe business verification
+2. Switch to LIVE mode in Stripe Dashboard
+3. Copy LIVE API keys (pk_live_xxx, sk_live_xxx)
+4. Update .env with live keys:
+   STRIPE_SECRET_KEY=sk_live_xxxxxxxxxxxxx
+   STRIPE_PUBLISHABLE_KEY=pk_live_xxxxxxxxxxxxx
+5. Test with real card (small amount)
+6. Go live! 🚀
+
+════════════════════════════════════════════════════════════════════════
+TROUBLESHOOTING
+════════════════════════════════════════════════════════════════════════
+
+❌ "Payment features disabled"
+   → Check STRIPE_SECRET_KEY is in .env file
+   → Restart Streamlit app
+
+❌ "No such customer"
+   → Make sure you're using test keys with test data
+   → Don't mix test/live modes
+
+❌ "Invalid API key"
+   → Check you copied the full key (starts with sk_test_ or sk_live_)
+   → No spaces before/after the key
+
+❌ Payment not working
+   → Check you created products in Stripe Dashboard
+   → Use test card: 4242 4242 4242 4242
+   → Check browser console for errors
+
+════════════════════════════════════════════════════════════════════════
+QUICK REFERENCE
+════════════════════════════════════════════════════════════════════════
+
+Stripe Dashboard: https://dashboard.stripe.com
+Test Cards: https://stripe.com/docs/testing#cards
+Documentation: https://stripe.com/docs
+Support: https://support.stripe.com
+
+Your Pricing:
+- Starter: £29.99/month or £299/year
+- Professional: £79.99/month or £799/year  
+- Enterprise: £199.99/month or £1999/year
+
+Annual savings: 17% discount
+
+════════════════════════════════════════════════════════════════════════
+
+✅ CHECKLIST:
+□ Created Stripe account
+□ Got API keys (test mode)
+□ Added keys to .env file
+□ Created 3 products in Stripe Dashboard
+□ Tested with test card
+□ Everything working!
+
+Ready for client demo! 🎉
+
+════════════════════════════════════════════════════════════════════════

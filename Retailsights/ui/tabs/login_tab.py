@@ -25,6 +25,10 @@ def render_login_tab():
             if not ok:
                 st.error(msg)
             else:
+                # Clear logout flag if it exists
+                if "_just_logged_out" in st.session_state:
+                    del st.session_state["_just_logged_out"]
+                
                 # Set session state
                 st.session_state["is_authenticated"] = True
                 st.session_state["auth_user"] = user
