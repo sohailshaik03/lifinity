@@ -175,7 +175,7 @@ def _render_users_management():
                             st.error("Failed to create user.")
 
     elif action == "View Users":
-        from repositories.users_repo import list_users
+        from Retailsights.repositories.users_repo import list_users
 
         st.subheader("All Users")
 
@@ -218,7 +218,7 @@ def _render_users_management():
             # --- Manage selected user ---
             st.markdown("---")
             st.subheader("Manage Selected User")
-            from repositories.users_repo import deactivate_user, update_user
+            from Retailsights.repositories.users_repo import deactivate_user, update_user
 
             user_map = {f"{u['email']} ({u['role']})": u for u in filtered}
             if user_map:
@@ -251,7 +251,7 @@ def _render_users_management():
                     if st.form_submit_button("💾 Save changes"):
                         pwd_hash = None
                         if new_password:
-                            from utils.security import hash_password as _hash
+                            from Retailsights.utils.security import hash_password as _hash
 
                             pwd_hash = _hash(new_password)
 
