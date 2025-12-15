@@ -86,23 +86,7 @@ def get_expiring_products(shop_id: int, days_threshold: int = 30) -> List[Dict[s
                 "name": row.name,
                 "current_stock": row.quantity,
                 "expiry_id": row.expiry_id,
-                "expiry_date": row
-            session.query(Product, ExpiryRecord)
-            .join(ExpiryRecord, Product.id == ExpiryRecord.product_id)
-            .filter(Product.shop_id == shop_id)
-            .filter(ExpiryRecord.expired_at <= cutoff)
-            .order_by(ExpiryRecord.expired_at.asc())
-            .all()
-        )
-        result: List[Dict[str, Any]] = []
-        for p, er in rows:
-            result.append({
-                "id": p.id,
-                "sku": p.sku,
-                "name": p.name,
-                "current_stock": er.quantity,
-                "expiry_id": er.id,
-                "expiry_date": er.expired_at,
+                "expiry_date": row.expired_at,
             })
         return result
     except Exception as e:
