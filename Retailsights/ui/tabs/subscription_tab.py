@@ -321,9 +321,21 @@ def render_no_subscription_view(user: dict, user_id: int, user_email: str):
     
     st.info("👋 Welcome! Choose a subscription plan to unlock premium features for your retail business.")
     
-    # Show available plans
-    st.markdown("---")
-    st.subheader("🎯 Choose Your Plan")
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Billing interval selector - centered
+    col_left, col_center, col_right = st.columns([1, 2, 1])
+    with col_center:
+        billing_interval = st.radio(
+            "Select Billing Interval",
+            ["Monthly", "Annual (Save 17%)"],
+            horizontal=True,
+            help="Annual billing includes a 17% discount"
+        )
+    
+    is_annual = "Annual" in billing_interval
+    
+    st.markdown("<br>", unsafe_allow_html=True)
     
     # Plan comparison
     plans = {
@@ -332,13 +344,14 @@ def render_no_subscription_view(user: dict, user_id: int, user_email: str):
             "price_monthly": 29.99,
             "price_annual": 299.00,
             "icon": "🌱",
+            "color": "#4CAF50",
             "features": [
-                "✅ Up to 3 shop locations",
-                "✅ Basic analytics dashboard",
-                "✅ Sales & inventory tracking",
-                "✅ Expiry date monitoring",
-                "✅ Email support",
-                "✅ 1GB data storage"
+                "Up to 3 shop locations",
+                "Basic analytics dashboard",
+                "Sales & inventory tracking",
+                "Expiry date monitoring",
+                "Email support",
+                "1GB data storage"
             ],
             "recommended": False
         },
@@ -347,15 +360,16 @@ def render_no_subscription_view(user: dict, user_id: int, user_email: str):
             "price_monthly": 79.99,
             "price_annual": 799.00,
             "icon": "⭐",
+            "color": "#2196F3",
             "features": [
-                "✅ Up to 10 shop locations",
-                "✅ Advanced analytics & AI insights",
-                "✅ Markdown pricing optimization",
-                "✅ Waste reduction reports",
-                "✅ Custom label printing",
-                "✅ Priority email & chat support",
-                "✅ 10GB data storage",
-                "✅ API access"
+                "Up to 10 shop locations",
+                "Advanced analytics & AI insights",
+                "Markdown pricing optimization",
+                "Waste reduction reports",
+                "Custom label printing",
+                "Priority support",
+                "10GB data storage",
+                "API access"
             ],
             "recommended": True
         },
@@ -364,85 +378,190 @@ def render_no_subscription_view(user: dict, user_id: int, user_email: str):
             "price_monthly": 199.99,
             "price_annual": 1999.00,
             "icon": "🚀",
+            "color": "#9C27B0",
             "features": [
-                "✅ Unlimited shop locations",
-                "✅ Enterprise AI analytics",
-                "✅ Multi-store management",
-                "✅ Advanced automation",
-                "✅ Dedicated account manager",
-                "✅ 24/7 phone support",
-                "✅ Unlimited data storage",
-                "✅ Custom integrations",
-                "✅ SLA guarantee"
+                "Unlimited shop locations",
+                "Enterprise AI analytics",
+                "Multi-store management",
+                "Advanced automation",
+                "Dedicated account manager",
+                "24/7 phone support",
+                "Unlimited data storage",
+                "Custom integrations",
+                "SLA guarantee"
             ],
             "recommended": False
         }
     }
     
-    # Billing interval selector
-    billing_interval = st.radio(
-        "Billing Interval",
-        ["Monthly", "Annual (Save 17%)"],
-        horizontal=True,
-        help="Annual billing includes a 17% discount"
-    )
-    is_annual = "Annual" in billing_interval
-    
-    st.markdown("---")
-    
-    # Display plans in columns
+    # Display plans in columns with equal height cards
     cols = st.columns(3)
     
     for idx, (plan_key, plan_data) in enumerate(plans.items()):
         with cols[idx]:
-            # Plan card
-            if plan_data["recommended"]:
-                st.success("⭐ RECOMMENDED FOR YOU")
+            # Card container with custom styling
+            card_style = f"""
+                <div style="
+                    border: 2px solid {plan_data['color']};
+                    border-radius: 12px;
+                    padding: 24px;
+                    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.95) 100%);
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                    height: 100%;
+                    position: relative;
+                ">
+            """
             
-            st.markdown(f"## {plan_data['icon']} {plan_data['name']}")
+            # Recommended badge
+            if plan_data["recommended"]:
+                st.markdown(f"""
+                    <div style="
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        color: white;
+                        padding: 8px 16px;
+                        border-radius: 20px;
+                        text-align: center;
+                        font-weight: bold;
+                        font-size: 14px;
+                        margin-bottom: 16px;
+                    ">
+                        ⭐ RECOMMENDED
+                    </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown("<div style='height: 46px;'></div>", unsafe_allow_html=True)
+            
+            # Plan icon and name
+            st.markdown(f"""
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 48px; margin-bottom: 10px;">{plan_data['icon']}</div>
+                    <h2 style="margin: 0; color: {plan_data['color']};">{plan_data['name']}</h2>
+                </div>
+            """, unsafe_allow_html=True)
             
             # Price display
             if is_annual:
                 price = plan_data['price_annual']
                 price_per_month = price / 12
-                st.markdown(f"### £{price:.2f}/year")
-                st.caption(f"£{price_per_month:.2f}/month")
+                st.markdown(f"""
+                    <div style="text-align: center; margin: 20px 0;">
+                        <div style="font-size: 36px; font-weight: bold; color: {plan_data['color']};">
+                            £{price:.0f}
+                        </div>
+                        <div style="font-size: 14px; color: #666; margin-top: 4px;">
+                            per year
+                        </div>
+                        <div style="font-size: 12px; color: #999; margin-top: 4px;">
+                            (£{price_per_month:.2f}/month)
+                        </div>
+                    </div>
+                """, unsafe_allow_html=True)
             else:
                 price = plan_data['price_monthly']
-                st.markdown(f"### £{price:.2f}/month")
+                st.markdown(f"""
+                    <div style="text-align: center; margin: 20px 0;">
+                        <div style="font-size: 36px; font-weight: bold; color: {plan_data['color']};">
+                            £{price:.2f}
+                        </div>
+                        <div style="font-size: 14px; color: #666; margin-top: 4px;">
+                            per month
+                        </div>
+                    </div>
+                """, unsafe_allow_html=True)
             
-            st.markdown("---")
+            st.markdown("<hr style='margin: 20px 0; border: 1px solid #e0e0e0;'>", unsafe_allow_html=True)
             
-            # Features
+            # Features list
+            st.markdown("<div style='text-align: left; min-height: 280px;'>", unsafe_allow_html=True)
             for feature in plan_data['features']:
-                st.markdown(feature)
+                st.markdown(f"""
+                    <div style="margin: 10px 0; padding-left: 4px;">
+                        <span style="color: {plan_data['color']}; font-size: 16px;">✓</span>
+                        <span style="margin-left: 8px; font-size: 14px;">{feature}</span>
+                    </div>
+                """, unsafe_allow_html=True)
+            st.markdown("</div>", unsafe_allow_html=True)
             
-            st.markdown("---")
+            st.markdown("<hr style='margin: 20px 0; border: 1px solid #e0e0e0;'>", unsafe_allow_html=True)
             
             # Subscribe button
             button_type = "primary" if plan_data["recommended"] else "secondary"
-            if st.button(f"Choose {plan_data['name']}", key=f"choose_{plan_key}", type=button_type, use_container_width=True):
+            if st.button(
+                f"Choose {plan_data['name']}", 
+                key=f"choose_{plan_key}", 
+                type=button_type, 
+                use_container_width=True
+            ):
                 handle_plan_selection(user, plan_key, plan_data, is_annual, user_email)
     
     # Additional info
-    st.markdown("---")
-    st.info("💯 **30-Day Money-Back Guarantee** · Cancel anytime · No hidden fees · Secure payment via Stripe")
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    
+    # Trust badges
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.markdown("""
+            <div style="text-align: center; padding: 16px;">
+                <div style="font-size: 32px;">💯</div>
+                <div style="font-size: 12px; font-weight: bold; margin-top: 8px;">30-Day Money-Back</div>
+            </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        st.markdown("""
+            <div style="text-align: center; padding: 16px;">
+                <div style="font-size: 32px;">🔒</div>
+                <div style="font-size: 12px; font-weight: bold; margin-top: 8px;">Secure Payment</div>
+            </div>
+        """, unsafe_allow_html=True)
+    with col3:
+        st.markdown("""
+            <div style="text-align: center; padding: 16px;">
+                <div style="font-size: 32px;">⚡</div>
+                <div style="font-size: 12px; font-weight: bold; margin-top: 8px;">Instant Activation</div>
+            </div>
+        """, unsafe_allow_html=True)
+    with col4:
+        st.markdown("""
+            <div style="text-align: center; padding: 16px;">
+                <div style="font-size: 32px;">🎯</div>
+                <div style="font-size: 12px; font-weight: bold; margin-top: 8px;">No Hidden Fees</div>
+            </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
     
     # FAQ
     with st.expander("❓ Frequently Asked Questions"):
-        st.markdown("""
-        **Can I change plans later?**  
-        Yes! You can upgrade or downgrade at any time.
+        col1, col2 = st.columns(2)
         
-        **What payment methods do you accept?**  
-        Credit/debit cards, Apple Pay, Google Pay via Stripe.
+        with col1:
+            st.markdown("""
+            **Can I change plans later?**  
+            Yes! You can upgrade or downgrade at any time. Changes take effect immediately.
+            
+            **What payment methods do you accept?**  
+            We accept all major credit/debit cards, Apple Pay, and Google Pay via Stripe.
+            
+            **Is there a free trial?**  
+            Contact our sales team for enterprise trial options.
+            """)
         
-        **Is there a free trial?**  
-        Contact sales for enterprise trial options.
-        
-        **Is my payment secure?**  
-        Yes! All payments are processed securely via Stripe with PCI-DSS compliance.
-        """)
+        with col2:
+            st.markdown("""
+            **Is my payment secure?**  
+            Absolutely! All payments are processed securely via Stripe with PCI-DSS compliance and 3D Secure authentication.
+            
+            **Can I cancel anytime?**  
+            Yes, you can cancel your subscription at any time with no penalties.
+            
+            **Do you offer refunds?**  
+            Yes! We offer a 30-day money-back guarantee on all plans.
+            """)
+    
+    # Support contact
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.info("💬 Need help choosing? Contact our sales team at **sales@retailsight.com** or chat with us below.")
+
 
 
 def handle_plan_selection(user: dict, plan_key: str, plan_data: dict, is_annual: bool, user_email: str):
