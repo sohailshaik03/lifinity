@@ -39,13 +39,20 @@ class SessionManager:
         return hashlib.sha256(combined.encode()).hexdigest()
     
     def save_session(self, user: Dict[str, Any], remember_me: bool = False):
-        """Save user session to cookies if remember_me is True"""
-        if not remember_me or not self.cookie_manager:
-            return
-        
+        """Save user session to cookies and session state"""
         try:
             user_id = user.get("id")
             if not user_id:
+                return
+            
+            # Always save to session state as primary storage
+            st.session_state["_persistent_user_id"] = str(user_id)
+            st.session_state["_persistent_user_email"] = user.get("email", "")
+            st.session_state["_persistent_user_name"] = user.get("full_name", "")
+            st.session_state["_persistent_user_role"] = user.get("role", "")
+            
+            # Also try cookies if available
+            if not self.cookie_manager:
                 return
             
             # Generate secure token
@@ -55,7 +62,7 @@ class SessionManager:
             expiry_days = self.COOKIE_EXPIRY_DAYS if remember_me else 1
             expiry = datetime.now() + timedelta(days=expiry_days)
             
-            # Save to cookies with key
+            # Save to cookies
             self.cookie_manager.set(
                 "auth_token", 
                 token,
@@ -75,34 +82,30 @@ class SessionManager:
                 key="user_email_cookie"
             )
             
-            # Also store in streamlit session state as backup
-            st.session_state["_cookie_user_id"] = str(user_id)
-            st.session_state["_cookie_auth_token"] = token
-            
         except Exception as e:
             # Silently fail - cookies are enhancement, not critical
-            import traceback
-            traceback.print_exc()
             pass
     
     def load_session(self) -> Optional[Dict[str, Any]]:
-        """Load user session from cookies"""
+        """Load user session from session state or cookies"""
+        # First try session state (fastest and most reliable)
+        user_id_str = st.session_state.get("_persistent_user_id")
+        if user_id_str:
+            try:
+                from Retailsights.repositories.users_repo import get_user_by_id
+                user = get_user_by_id(int(user_id_str))
+                if user and user.get("is_active"):
+                    return {
+                        "id": user["id"],
+                        "email": user["email"],
+                        "full_name": user["full_name"],
+                        "role": user["role"],
+                    }
+            except Exception:
+                pass
+        
+        # Fallback to cookies if available
         if not self.cookie_manager:
-            # Try from session state backup
-            user_id_str = st.session_state.get("_cookie_user_id")
-            if user_id_str:
-                try:
-                    from Retailsights.repositories.users_repo import get_user_by_id
-                    user = get_user_by_id(int(user_id_str))
-                    if user and user.get("is_active"):
-                        return {
-                            "id": user["id"],
-                            "email": user["email"],
-                            "full_name": user["full_name"],
-                            "role": user["role"],
-                        }
-                except Exception:
-                    pass
             return None
         
         try:
@@ -142,19 +145,18 @@ class SessionManager:
             
         except Exception as e:
             # Silently fail and clear corrupted cookies
-            import traceback
-            traceback.print_exc()
             self.clear_session()
             return None
     
     def clear_session(self):
-        """Clear all session cookies"""
+        """Clear all session data"""
+        # Clear session state
+        for key in ["_persistent_user_id", "_persistent_user_email", "_persistent_user_name", "_persistent_user_role"]:
+            if key in st.session_state:
+                del st.session_state[key]
+        
+        # Clear cookies if available
         if not self.cookie_manager:
-            # Clear session state backup
-            if "_cookie_user_id" in st.session_state:
-                del st.session_state["_cookie_user_id"]
-            if "_cookie_auth_token" in st.session_state:
-                del st.session_state["_cookie_auth_token"]
             return
             
         try:
@@ -165,10 +167,14 @@ class SessionManager:
             pass
     
     def is_session_valid(self) -> bool:
-        """Check if there's a valid session in cookies"""
+        """Check if there's a valid session"""
+        # Check session state first (faster)
+        if st.session_state.get("_persistent_user_id"):
+            return True
+        
+        # Check cookies
         if not self.cookie_manager:
-            # Check session state backup
-            return bool(st.session_state.get("_cookie_user_id"))
+            return False
             
         try:
             cookies = self.cookie_manager.get_all()

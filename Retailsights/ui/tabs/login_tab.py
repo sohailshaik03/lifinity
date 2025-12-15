@@ -28,18 +28,17 @@ def render_login_tab():
                 # Set session state
                 st.session_state["is_authenticated"] = True
                 st.session_state["auth_user"] = user
-                st.session_state["_auto_login_attempted"] = False  # Reset for next session
                 
-                # Save to cookies if remember me is checked
-                if remember_me:
-                    try:
-                        session_mgr = SessionManager()
-                        session_mgr.save_session(user, remember_me=True)
+                # Always save to session manager (even without remember me checkbox)
+                # This ensures session persists on refresh
+                try:
+                    session_mgr = SessionManager()
+                    session_mgr.save_session(user, remember_me=True)  # Always save
+                    if remember_me:
                         st.success("✅ Logged in successfully (session saved for 30 days)")
-                    except Exception as e:
-                        st.warning(f"Logged in but couldn't save session: {e}")
+                    else:
                         st.success("✅ Logged in successfully")
-                else:
+                except Exception as e:
                     st.success("✅ Logged in successfully")
                 
                 st.rerun()

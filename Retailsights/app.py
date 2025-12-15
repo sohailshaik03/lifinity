@@ -35,34 +35,33 @@ from .ui.tabs.subscription_tab import render_subscription_tab
 
 def initialize_session_state():
     """Initialize session state variables to prevent loss on refresh."""
-    if "is_authenticated" not in st.session_state:
-        st.session_state["is_authenticated"] = False
-    if "auth_user" not in st.session_state:
-        st.session_state["auth_user"] = None
+    # Always try to restore session first before initializing to False
+    session_restored = False
+    
+    # Try to restore from session manager (cookies) on every page load
+    try:
+        from Retailsights.utils.session_manager import SessionManager
+        session_mgr = SessionManager()
+        
+        # Check if we have a valid saved session
+        user = session_mgr.load_session()
+        if user:
+            st.session_state["is_authenticated"] = True
+            st.session_state["auth_user"] = user
+            session_restored = True
+    except Exception as e:
+        pass  # Silently fail, will use defaults
+    
+    # Only initialize to False if no session was restored
+    if not session_restored:
+        if "is_authenticated" not in st.session_state:
+            st.session_state["is_authenticated"] = False
+        if "auth_user" not in st.session_state:
+            st.session_state["auth_user"] = None
+    
+    # Always ensure current_shop exists
     if "current_shop" not in st.session_state:
         st.session_state["current_shop"] = None
-    
-    # Try to restore session from cookies (auto-login)
-    # Only run once per session to avoid multiple attempts
-    if not st.session_state.get("is_authenticated") and not st.session_state.get("_auto_login_attempted"):
-        st.session_state["_auto_login_attempted"] = True
-        try:
-            from Retailsights.utils.session_manager import SessionManager
-            session_mgr = SessionManager()
-            
-            # Check if valid session exists in cookies
-            if session_mgr.is_session_valid():
-                user = session_mgr.load_session()
-                if user:
-                    st.session_state["is_authenticated"] = True
-                    st.session_state["auth_user"] = user
-                    from Retailsights.logger import log
-                    log.info(f"Auto-login successful for user: {user.get('email')}")
-        except Exception as e:
-            from Retailsights.logger import log
-            log.warning(f"Auto-login failed: {e}")
-            import traceback
-            traceback.print_exc()
 
 
 def render_main_shell(user: dict):

@@ -20,12 +20,18 @@ def show_top_bar(user: dict | None):
 def show_logout_button():
     if st.sidebar.button("Logout"):
         # Clear session state
-        for key in list(st.session_state.keys()):
-            if key.startswith("auth_") or key in ("user", "is_authenticated", "_cookie_user_id", "_cookie_auth_token", "_auto_login_attempted"):
+        keys_to_clear = [
+            "auth_user", "is_authenticated", "current_shop",
+            "_persistent_user_id", "_persistent_user_email", 
+            "_persistent_user_name", "_persistent_user_role"
+        ]
+        for key in keys_to_clear:
+            if key in st.session_state:
                 del st.session_state[key]
         
         # Clear cookies
         try:
+            from Retailsights.utils.session_manager import SessionManager
             session_mgr = SessionManager()
             session_mgr.clear_session()
         except Exception:
