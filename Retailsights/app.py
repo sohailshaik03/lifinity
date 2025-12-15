@@ -164,16 +164,6 @@ def render_main_shell(user: dict):
         st.info("This module will be added in the next steps of the build.")
 
 
-def initialize_session_state():
-    """Initialize session state variables to prevent loss on refresh."""
-    if "is_authenticated" not in st.session_state:
-        st.session_state["is_authenticated"] = False
-    if "auth_user" not in st.session_state:
-        st.session_state["auth_user"] = None
-    if "current_shop" not in st.session_state:
-        st.session_state["current_shop"] = None
-
-
 def main():
     # Initialize session state FIRST to prevent loss on refresh
     initialize_session_state()
