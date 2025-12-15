@@ -13,7 +13,10 @@ from decimal import Decimal
 import stripe
 from loguru import logger
 
-from Retailsights.config import config
+try:
+    from Retailsights.config import config
+except ImportError:
+    from config import config
 
 
 class StripePaymentError(Exception):
