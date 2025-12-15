@@ -48,8 +48,7 @@ engine = create_engine(
     echo=False,
     future=True,
     connect_args={
-        "connect_timeout": 10,
-        "options": "-c statement_timeout=30000"  # 30s query timeout
+        "connect_timeout": 10
     }
 )
 SessionLocal = scoped_session(sessionmaker(bind=engine, autoflush=False, autocommit=False))
