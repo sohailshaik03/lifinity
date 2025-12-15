@@ -47,7 +47,7 @@ def _render_revenue_trend(df_last30: pd.DataFrame):
         y="revenue",
         title="Daily revenue (30 days)",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def _render_waste_chart(df_waste: pd.DataFrame):
@@ -76,7 +76,7 @@ def _render_waste_chart(df_waste: pd.DataFrame):
         y="estimated_cost_loss",
         title="Waste cost by reason",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def _render_expiring_stock(metrics: dict):
@@ -132,7 +132,7 @@ def _render_category_performance(cat_last30: pd.DataFrame):
         y="revenue",
         title="Revenue by category (30 days)",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
     st.dataframe(
         cat_last30.rename(

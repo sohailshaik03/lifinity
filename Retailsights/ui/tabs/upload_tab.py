@@ -24,7 +24,7 @@ def _render_file_preview(df: pd.DataFrame) -> None:
     via the DB + other tabs.
     """
     st.markdown("### 📄 Cleaned data preview")
-    st.dataframe(df.head(50), use_container_width=True)
+    st.dataframe(df.head(50), width="stretch")
 
     # Guard: need datetime + revenue for charts
     if "datetime" not in df.columns or "revenue" not in df.columns:
@@ -44,7 +44,7 @@ def _render_file_preview(df: pd.DataFrame) -> None:
             y="revenue",
             title="Daily revenue from this upload",
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
     else:
         st.info("No revenue data to plot.")
 
@@ -58,14 +58,14 @@ def _render_file_preview(df: pd.DataFrame) -> None:
         .head(10)
     )
     if not top_products.empty:
-        st.dataframe(top_products, use_container_width=True)
+        st.dataframe(top_products, width="stretch")
         fig_top = px.bar(
             top_products,
             x="product",
             y="revenue",
             title="Top 10 products (this upload)",
         )
-        st.plotly_chart(fig_top, use_container_width=True)
+        st.plotly_chart(fig_top, width="stretch")
     else:
         st.info("No product breakdown available.")
 
@@ -215,7 +215,7 @@ def render_upload_tab(state) -> None:
         
         col1, col2 = st.columns([1, 2])
         with col1:
-            if st.button("🚀 Upgrade Now", type="primary", use_container_width=True):
+            if st.button("🚀 Upgrade Now", type="primary", width="stretch"):
                 st.switch_page("pages/subscription.py")
         with col2:
             st.caption("Upgrade instantly - no credit card required for trial")
@@ -262,7 +262,7 @@ def render_upload_tab(state) -> None:
         
         col1, col2 = st.columns([1, 2])
         with col1:
-            if st.button("🚀 Upgrade Now", type="primary", use_container_width=True, key="upgrade_rows"):
+            if st.button("🚀 Upgrade Now", type="primary", width="stretch", key="upgrade_rows"):
                 st.switch_page("pages/subscription.py")
         with col2:
             st.caption("Process unlimited data with our enterprise plans")
@@ -361,7 +361,7 @@ def render_upload_tab(state) -> None:
         
         # Show preview of cleaned data
         st.markdown("### 👁️ Cleaned Data Preview")
-        st.dataframe(cleaned_df.head(100), use_container_width=True)
+        st.dataframe(cleaned_df.head(100), width="stretch")
         
         # Offer download of cleaned data
         st.markdown("### 💾 Download Cleaned Data")
@@ -393,7 +393,7 @@ def render_upload_tab(state) -> None:
     ts = AnalyticsService.aggregate_time_series(df, freq="D")
     if not ts.empty:
         fig = px.line(ts, x="datetime", y="revenue", title="Daily revenue (this upload)")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
     # ------------------------------------------------------------------
     # TIER-GATED FEATURES
@@ -425,8 +425,8 @@ def render_upload_tab(state) -> None:
                 forecast_df = AnalyticsService.forecast_sales(df, periods=periods)
                 if not forecast_df.empty:
                     figf = px.line(forecast_df, x="datetime", y="forecast", title="Forecasted daily revenue")
-                    st.plotly_chart(figf, use_container_width=True)
-                    st.dataframe(forecast_df.head(50), use_container_width=True)
+                    st.plotly_chart(figf, width="stretch")
+                    st.dataframe(forecast_df.head(50), width="stretch")
                     
                     # Track usage
                     try:

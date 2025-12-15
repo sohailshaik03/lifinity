@@ -61,24 +61,22 @@ def update_export(export_id: int, **kwargs) -> bool:
 
 def get_exports_for_shop(shop_id: int) -> List[Dict[str, Any]]:
     conn = get_connection()
-    cur = conn.cursor(dictionary=True)
     try:
-        cur.execute(
-            """
+        result = conn.execute(
+            text("""
             SELECT id, shop_id, user_id, filename, provider, url, status, task_id, created_at, completed_at
             FROM report_exports
-            WHERE shop_id = %s
+            WHERE shop_id = :shop_id
             ORDER BY created_at DESC
-            """,
-            (shop_id,),
+            """),
+            {"shop_id": shop_id}
         )
-        rows = cur.fetchall()
+        rows = [dict(row._mapping) for row in result]
         return rows if rows else []
     except Exception as e:
         logger.error(f"get_exports_for_shop error: {e}")
         return []
     finally:
-        cur.close()
         conn.close()
 
 

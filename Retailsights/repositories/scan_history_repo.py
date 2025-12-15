@@ -55,23 +55,22 @@ def record_scan_event(
 def get_recent_scans(shop_id: int, limit: int = 50) -> List[Dict[str, Any]]:
     """Fetch recent scan events for a shop."""
     conn = get_connection()
-    cur = conn.cursor(dictionary=True)
     try:
-        cur.execute(
-            """
+        result = conn.execute(
+            text("""
             SELECT id, code, code_type, source, discount_applied, discount_percent,
                    original_price, discounted_price, message, scanned_at, product_id
             FROM scan_history
-            WHERE shop_id = %s
+            WHERE shop_id = :shop_id
             ORDER BY scanned_at DESC
-            LIMIT %s
-            """,
-            (shop_id, limit),
+            LIMIT :limit
+            """),
+            {"shop_id": shop_id, "limit": limit}
         )
-        return cur.fetchall() or []
+        rows = [dict(row._mapping) for row in result]
+        return rows if rows else []
     except Exception as e:
         logger.error(f"get_recent_scans error: {e}")
         return []
     finally:
-        cur.close()
         conn.close()

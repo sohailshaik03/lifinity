@@ -75,7 +75,7 @@ def render_expiry_tab(state) -> None:
                 )
 
             df = pd.DataFrame(rows)
-            st.dataframe(df, use_container_width=True)
+            st.dataframe(df, width="stretch")
 
             # Mark as wasted
             st.markdown("#### Mark product as wasted")
@@ -138,7 +138,7 @@ def render_expiry_tab(state) -> None:
         if rules:
             st.markdown("#### Current rules")
             rule_df = pd.DataFrame(rules)
-            st.dataframe(rule_df[["name", "days_left_min", "days_left_max", "quantity_min", "discount_percent"]], use_container_width=True)
+            st.dataframe(rule_df[["name", "days_left_min", "days_left_max", "quantity_min", "discount_percent"]], width="stretch")
 
         st.markdown("#### Add new rule")
         col1, col2 = st.columns(2)
@@ -302,7 +302,7 @@ def render_expiry_tab(state) -> None:
                 rule_df = pd.DataFrame(rule_list)
                 st.dataframe(
                     rule_df,
-                    use_container_width=True,
+                    width="stretch",
                     hide_index=True,
                 )
                 

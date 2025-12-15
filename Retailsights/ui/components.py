@@ -51,7 +51,7 @@ def show_support_widget():
         Within 24 hours
         """)
         
-        if st.button("Open Support Center", use_container_width=True):
+        if st.button("Open Support Center", width="stretch"):
             st.session_state["_navigate_to_support"] = True
             st.rerun()
         
@@ -95,7 +95,7 @@ def render_sales_dashboard(df: pd.DataFrame):
     daily_revenue = df.groupby(df["datetime"].dt.date)["revenue"].sum().reset_index()
     if not daily_revenue.empty:
         fig = px.line(daily_revenue, x="datetime", y="revenue", markers=True)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
     # Top products
     st.subheader("Top Products")
@@ -108,4 +108,4 @@ def render_sales_dashboard(df: pd.DataFrame):
             y=top_products.values,
             labels={"x": "Product", "y": "Revenue"},
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")

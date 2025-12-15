@@ -90,7 +90,7 @@ def render_chatbot():
     
     col1, col2 = st.columns([1, 5])
     with col1:
-        if st.button("Send", use_container_width=True):
+        if st.button("Send", width="stretch"):
             if user_message.strip():
                 # Add user message
                 st.session_state.chat_history.append({
@@ -110,7 +110,7 @@ def render_chatbot():
                 st.rerun()
     
     with col2:
-        if st.button("Clear Chat", use_container_width=True):
+        if st.button("Clear Chat", width="stretch"):
             st.session_state.chat_history = [
                 {
                     "role": "assistant",
@@ -125,15 +125,15 @@ def render_chatbot():
     quick_topics = st.columns(3)
     
     with quick_topics[0]:
-        if st.button("🔐 Login Issues", use_container_width=True):
+        if st.button("🔐 Login Issues", width="stretch"):
             trigger_quick_response("login issues")
     
     with quick_topics[1]:
-        if st.button("📊 Upload Data", use_container_width=True):
+        if st.button("📊 Upload Data", width="stretch"):
             trigger_quick_response("upload data")
     
     with quick_topics[2]:
-        if st.button("⚠️ Expiry Alerts", use_container_width=True):
+        if st.button("⚠️ Expiry Alerts", width="stretch"):
             trigger_quick_response("expiry alerts")
 
 
@@ -318,7 +318,7 @@ def render_contact_form():
             type=["png", "jpg", "jpeg", "pdf", "csv", "xlsx"]
         )
         
-        submitted = st.form_submit_button("📤 Submit Ticket", use_container_width=True)
+        submitted = st.form_submit_button("📤 Submit Ticket", width="stretch")
         
         if submitted:
             # Validation

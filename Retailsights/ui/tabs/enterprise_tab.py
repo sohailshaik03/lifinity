@@ -105,7 +105,7 @@ def render_multi_store_overview():
                            'Waste %': '{:.1f}%',
                            'Efficiency': '{:.1f}'
                        }),
-        use_container_width=True
+        width="stretch"
     )
     
     # Charts
@@ -121,7 +121,7 @@ def render_multi_store_overview():
             color_continuous_scale='RdYlGn',
             labels={'revenue_last_7_days': 'Revenue (£)', 'store_name': 'Store'}
         )
-        st.plotly_chart(fig_revenue, use_container_width=True)
+        st.plotly_chart(fig_revenue, width="stretch")
     
     with col2:
         st.subheader("Waste by Store")
@@ -133,7 +133,7 @@ def render_multi_store_overview():
             color_continuous_scale='Reds',
             labels={'waste_cost_last_30_days': 'Waste Cost (£)', 'store_name': 'Store'}
         )
-        st.plotly_chart(fig_waste, use_container_width=True)
+        st.plotly_chart(fig_waste, width="stretch")
     
     # Regional performance
     st.markdown("---")
@@ -149,7 +149,7 @@ def render_multi_store_overview():
                 'total_waste_cost': '£{:,.0f}',
                 'avg_waste_per_store': '£{:,.0f}'
             }),
-            use_container_width=True
+            width="stretch"
         )
 
 
@@ -202,7 +202,7 @@ def render_ai_predictions(state):
                     markers=True,
                     title="Daily Waste Forecast"
                 )
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width="stretch")
             
             # Feature importance (if ML model)
             if 'feature_importance' in prediction:
@@ -219,7 +219,7 @@ def render_ai_predictions(state):
                     orientation='h',
                     title="Factors Affecting Waste Prediction"
                 )
-                st.plotly_chart(fig_importance, use_container_width=True)
+                st.plotly_chart(fig_importance, width="stretch")
         else:
             st.warning(prediction.get('message', 'Prediction not available'))
     
@@ -269,7 +269,7 @@ def render_ai_predictions(state):
             names='category',
             title="Waste Cost Distribution by Category (30 days)"
         )
-        st.plotly_chart(fig_cat, use_container_width=True)
+        st.plotly_chart(fig_cat, width="stretch")
 
 
 def render_dynamic_pricing_tab(state):
@@ -417,7 +417,7 @@ def render_staff_performance(state):
                            'Revenue': '£{:,.2f}',
                            'Score': '{:.0f}'
                        }),
-        use_container_width=True
+        width="stretch"
     )
     
     # Performance chart
@@ -430,7 +430,7 @@ def render_staff_performance(state):
         title=f"Staff Performance Scores ({days} days)",
         labels={'performance_score': 'Score', 'username': 'Staff Member'}
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def render_anomaly_detection(state):

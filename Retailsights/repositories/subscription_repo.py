@@ -4,6 +4,7 @@ Subscription Repository - Database operations for subscription management
 """
 from typing import Optional, Dict, Any, List
 from datetime import datetime, timedelta
+from sqlalchemy import text
 from ..db import get_connection
 from ..logger import log
 import json
@@ -16,9 +17,8 @@ class SubscriptionRepo:
     def get_user_subscription(user_id: int) -> Optional[Dict[str, Any]]:
         """Get active subscription for a user"""
         conn = get_connection()
-        cur = conn.cursor(dictionary=True)
         try:
-            cur.execute("""
+            result = conn.execute(text("""
                 SELECT 
                     us.id,
                     us.user_id,
@@ -41,19 +41,22 @@ class SubscriptionRepo:
                     us.end_date as subscription_ends_at
                 FROM user_subscriptions us
                 JOIN subscription_plans sp ON us.plan_id = sp.id
-                WHERE us.user_id = %s
+                WHERE us.user_id = :user_id
                 ORDER BY us.created_at DESC
                 LIMIT 1
-            """, (user_id,))
-            result = cur.fetchone()
-            if result and result.get('is_trial'):
-                result['is_trial'] = bool(result['is_trial'])
-            return result
+            """), {"user_id": user_id})
+            
+            row = result.fetchone()
+            if row:
+                result_dict = dict(row._mapping)
+                if result_dict.get('is_trial'):
+                    result_dict['is_trial'] = bool(result_dict['is_trial'])
+                return result_dict
+            return None
         except Exception as e:
             log.error(f"Error getting user subscription: {e}")
             return None
         finally:
-            cur.close()
             conn.close()
     
     @staticmethod
@@ -70,19 +73,20 @@ class SubscriptionRepo:
     ) -> Optional[int]:
         """Create a new subscription for a user"""
         conn = get_connection()
-        cur = conn.cursor(dictionary=True)
         
         try:
             # Get plan ID
-            cur.execute(
-                "SELECT id FROM subscription_plans WHERE tier = %s LIMIT 1",
-                (plan_tier,)
+            result = conn.execute(
+                text("SELECT id FROM subscription_plans WHERE tier = :tier LIMIT 1"),
+                {"tier": plan_tier}
             )
-            plan = cur.fetchone()
+            row = result.fetchone()
             
-            if not plan:
+            if not row:
                 log.error(f"Plan tier '{plan_tier}' not found")
                 return None
+            
+            plan = dict(row._mapping)
             
             # Calculate dates
             start_date = datetime.now()
@@ -90,36 +94,41 @@ class SubscriptionRepo:
             trial_ends_at = start_date + timedelta(days=trial_days) if trial_days > 0 else None
             next_billing_date = trial_ends_at if trial_ends_at else start_date + timedelta(days=30)
             
-            cur.execute("""
+            result = conn.execute(text("""
                 INSERT INTO user_subscriptions 
                     (user_id, plan_id, status, start_date, trial_ends_at, next_billing_date)
-                VALUES (%s, %s, %s, %s, %s, %s)
-            """, (user_id, plan['id'], status, start_date, trial_ends_at, next_billing_date))
+                VALUES (:user_id, :plan_id, :status, :start_date, :trial_ends_at, :next_billing_date)
+            """), {
+                "user_id": user_id,
+                "plan_id": plan['id'],
+                "status": status,
+                "start_date": start_date,
+                "trial_ends_at": trial_ends_at,
+                "next_billing_date": next_billing_date
+            })
             
             conn.commit()
-            return cur.lastrowid
+            return result.lastrowid
             
         except Exception as e:
             log.error(f"Error creating subscription: {e}")
             conn.rollback()
             return None
         finally:
-            cur.close()
             conn.close()
     
     @staticmethod
     def upgrade_subscription(user_id: int, new_tier: str, payment_method: str = None) -> bool:
         """Upgrade user to a new tier"""
         conn = get_connection()
-        cur = conn.cursor()
         
         try:
             # Deactivate current subscription
-            cur.execute("""
+            conn.execute(text("""
                 UPDATE user_subscriptions 
                 SET status = 'upgraded', end_date = NOW() 
-                WHERE user_id = %s AND status IN ('active', 'trial')
-            """, (user_id,))
+                WHERE user_id = :user_id AND status IN ('active', 'trial')
+            """), {"user_id": user_id})
             
             conn.commit()
             
@@ -131,21 +140,19 @@ class SubscriptionRepo:
             conn.rollback()
             return False
         finally:
-            cur.close()
             conn.close()
     
     @staticmethod
     def cancel_subscription(user_id: int) -> bool:
         """Cancel user subscription"""
         conn = get_connection()
-        cur = conn.cursor()
         
         try:
-            cur.execute("""
+            conn.execute(text("""
                 UPDATE user_subscriptions 
                 SET status = 'cancelled', end_date = NOW() 
-                WHERE user_id = %s AND status IN ('active', 'trial')
-            """, (user_id,))
+                WHERE user_id = :user_id AND status IN ('active', 'trial')
+            """), {"user_id": user_id})
             
             conn.commit()
             return True
@@ -155,14 +162,12 @@ class SubscriptionRepo:
             conn.rollback()
             return False
         finally:
-            cur.close()
             conn.close()
     
     @staticmethod
     def track_usage(user_id: int, metric_name: str, value: int) -> bool:
         """Track usage metric"""
         conn = get_connection()
-        cur = conn.cursor()
         
         try:
             # Get current month period
@@ -173,13 +178,19 @@ class SubscriptionRepo:
             else:
                 period_end = now.replace(month=now.month + 1, day=1)
             
-            cur.execute("""
+            conn.execute(text("""
                 INSERT INTO subscription_usage 
                     (user_id, metric_name, metric_value, period_start, period_end)
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (:user_id, :metric_name, :value, :period_start, :period_end)
                 ON DUPLICATE KEY UPDATE 
                     metric_value = metric_value + VALUES(metric_value)
-            """, (user_id, metric_name, value, period_start, period_end))
+            """), {
+                "user_id": user_id,
+                "metric_name": metric_name,
+                "value": value,
+                "period_start": period_start,
+                "period_end": period_end
+            })
             
             conn.commit()
             return True
@@ -189,39 +200,39 @@ class SubscriptionRepo:
             conn.rollback()
             return False
         finally:
-            cur.close()
             conn.close()
     
     @staticmethod
     def get_usage_stats(user_id: int, period_days: int = 30) -> Dict[str, Any]:
         """Get usage statistics for a user"""
         conn = get_connection()
-        cur = conn.cursor(dictionary=True)
         
         try:
             date_from = datetime.now() - timedelta(days=period_days)
             
             # Get file uploads count
-            cur.execute("""
+            result = conn.execute(text("""
                 SELECT 
                     COUNT(*) as files_uploaded,
                     COALESCE(SUM(row_count), 0) as total_rows_processed,
                     COALESCE(SUM(file_size_mb), 0) as storage_used_mb
                 FROM file_uploads
-                WHERE user_id = %s AND uploaded_at >= %s
-            """, (user_id, date_from))
+                WHERE user_id = :user_id AND uploaded_at >= :date_from
+            """), {"user_id": user_id, "date_from": date_from})
             
-            stats = cur.fetchone() or {}
+            row = result.fetchone()
+            stats = dict(row._mapping) if row else {}
             
             # Get feature usage count
-            cur.execute("""
+            result = conn.execute(text("""
                 SELECT COUNT(DISTINCT feature_name) as features_accessed
                 FROM feature_usage
-                WHERE user_id = %s AND last_used_at >= %s
-            """, (user_id, date_from))
+                WHERE user_id = :user_id AND last_used_at >= :date_from
+            """), {"user_id": user_id, "date_from": date_from})
             
-            feature_stats = cur.fetchone()
-            if feature_stats:
+            row = result.fetchone()
+            if row:
+                feature_stats = dict(row._mapping)
                 stats['features_accessed'] = feature_stats['features_accessed']
             
             return stats
@@ -235,17 +246,15 @@ class SubscriptionRepo:
                 'features_accessed': 0
             }
         finally:
-            cur.close()
             conn.close()
     
     @staticmethod
     def get_payment_history(user_id: int, limit: int = 10) -> List[Dict[str, Any]]:
         """Get payment history for a user"""
         conn = get_connection()
-        cur = conn.cursor(dictionary=True)
         
         try:
-            cur.execute("""
+            result = conn.execute(text("""
                 SELECT 
                     id,
                     amount,
@@ -258,19 +267,18 @@ class SubscriptionRepo:
                     created_at
                 FROM subscription_payments
                 WHERE user_subscription_id IN (
-                    SELECT id FROM user_subscriptions WHERE user_id = %s
+                    SELECT id FROM user_subscriptions WHERE user_id = :user_id
                 )
                 ORDER BY created_at DESC
-                LIMIT %s
-            """, (user_id, limit))
+                LIMIT :limit
+            """), {"user_id": user_id, "limit": limit})
             
-            return cur.fetchall() or []
+            return [dict(row._mapping) for row in result.fetchall()] or []
             
         except Exception as e:
             log.error(f"Error getting payment history: {e}")
             return []
         finally:
-            cur.close()
             conn.close()
     
     @staticmethod

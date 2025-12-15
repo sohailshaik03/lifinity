@@ -143,7 +143,7 @@ def render_yellow_sticker_tab(state) -> None:
                             })
 
                         df = pd.DataFrame(df_data)
-                        st.dataframe(df, use_container_width=True, hide_index=True)
+                        st.dataframe(df, width="stretch", hide_index=True)
 
                         # Store in session state for printing
                         st.session_state["label_queue"] = labels
@@ -156,7 +156,7 @@ def render_yellow_sticker_tab(state) -> None:
                             st.image(
                                 labels[0]["label_image"],
                                 caption=f"Preview: {labels[0]['name']}",
-                                use_container_width=True
+                                width="stretch"
                             )
                             st.caption("Yellow sticker label with barcode, discount, and expiry info")
 
@@ -277,7 +277,7 @@ def render_yellow_sticker_tab(state) -> None:
                                                     )
                                                     label_img = label_svc.generate_yellow_sticker_label(product, expiry_record, discount_info, include_barcode=True)
                                                     if label_img:
-                                                        st.image(label_img, caption="Yellow Sticker Label", use_container_width=True)
+                                                        st.image(label_img, caption="Yellow Sticker Label", width="stretch")
                                                         st.download_button(label="💾 Download Label (PNG)", data=label_img, file_name=f"label_{barcode_input}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png", mime="image/png")
                                             else:
                                                 st.error("Could not reduce stock (no active expiry record)")
@@ -344,7 +344,7 @@ def render_yellow_sticker_tab(state) -> None:
                                                 )
                                                 
                                                 if label_img:
-                                                    st.image(label_img, caption="Yellow Sticker Label", use_container_width=True)
+                                                    st.image(label_img, caption="Yellow Sticker Label", width="stretch")
                                                     
                                                     # Download button
                                                     st.download_button(
@@ -394,7 +394,7 @@ def render_yellow_sticker_tab(state) -> None:
             if uploaded_img:
                 try:
                     pil_img = Image.open(uploaded_img)
-                    st.image(pil_img, caption="Uploaded image", use_container_width=True)
+                    st.image(pil_img, caption="Uploaded image", width="stretch")
                     codes = _decode_barcodes_from_image(pil_img)
                     if not codes:
                         st.error("No barcodes detected. Try a clearer image.")
@@ -540,7 +540,7 @@ def render_yellow_sticker_tab(state) -> None:
                     "Disc £": h["discounted_price"],
                     "Msg": h.get("message")
                 })
-            st.dataframe(pd.DataFrame(hist_rows), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(hist_rows), width="stretch", hide_index=True)
 
     # --- Tab 3: Print Queue ---
     with tabs[2]:
@@ -576,7 +576,7 @@ def render_yellow_sticker_tab(state) -> None:
                             st.image(
                                 label["label_image"],
                                 caption=f"£{label['discounted_price']:.2f} (was £{label['original_price']:.2f})",
-                                use_container_width=True
+                                width="stretch"
                             )
 
             st.markdown("---")

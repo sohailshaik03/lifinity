@@ -199,7 +199,7 @@ def render_plan_card(tier: str, current_tier: str, user_id: int):
             else:
                 button_text = "Subscribe Now"
             
-            if st.button(button_text, key=f"upgrade_{tier}", use_container_width=True):
+            if st.button(button_text, key=f"upgrade_{tier}", width="stretch"):
                 st.session_state['show_payment'] = (tier, price_amount)
                 st.rerun()
                 
@@ -240,11 +240,11 @@ def show_payment_modal(user_id: int, plan_tier: str, amount: int):
     col_pay, col_cancel = st.columns(2)
     
     with col_pay:
-        if st.button("🔐 Proceed to Payment", use_container_width=True, type="primary"):
+        if st.button("🔐 Proceed to Payment", width="stretch", type="primary"):
             process_payment(user_id, plan_tier, amount, billing_type)
     
     with col_cancel:
-        if st.button("❌ Cancel", use_container_width=True):
+        if st.button("❌ Cancel", width="stretch"):
             del st.session_state['show_payment']
             st.rerun()
 
@@ -305,7 +305,7 @@ def process_payment(user_id: int, plan_tier: str, amount: int, billing_type: str
             st.markdown(f"[Click here if not redirected automatically]({checkout_session['url']})")
             
             # Open checkout in new tab
-            st.link_button("🔐 Open Secure Checkout", checkout_session['url'], use_container_width=True)
+            st.link_button("🔐 Open Secure Checkout", checkout_session['url'], width="stretch")
         else:
             st.error("❌ Failed to create checkout session. Please try again.")
             

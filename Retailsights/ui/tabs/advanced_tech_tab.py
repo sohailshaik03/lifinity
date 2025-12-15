@@ -208,7 +208,7 @@ def render_iot_sensors_tab(state):
                 lambda x: 'background-color: #ffcccc' if isinstance(x, (int, float)) and x > 10 else '',
                 subset=['temperature']
             ),
-            use_container_width=True
+            width="stretch"
         )
         
         # Temperature chart
@@ -244,7 +244,7 @@ def render_iot_sensors_tab(state):
                 hovermode='x unified'
             )
             
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
     
     # Spoilage risk prediction
     st.markdown("---")
@@ -297,7 +297,7 @@ def render_computer_vision_tab(state):
             col1, col2 = st.columns([1, 1])
             
             with col1:
-                st.image(uploaded_file, caption="Uploaded Image", use_container_width=True)
+                st.image(uploaded_file, caption="Uploaded Image", width="stretch")
             
             with col2:
                 if st.button("🔍 Analyze Quality"):
@@ -345,7 +345,7 @@ def render_computer_vision_tab(state):
             col1, col2 = st.columns([1, 1])
             
             with col1:
-                st.image(shelf_image, caption="Shelf Image", use_container_width=True)
+                st.image(shelf_image, caption="Shelf Image", width="stretch")
             
             with col2:
                 if st.button("📊 Analyze Shelf"):
@@ -379,7 +379,7 @@ def render_computer_vision_tab(state):
             col1, col2 = st.columns([1, 1])
             
             with col1:
-                st.image(stock_image, caption="Product Image", use_container_width=True)
+                st.image(stock_image, caption="Product Image", width="stretch")
             
             with col2:
                 if st.button("🔢 Count Products"):

@@ -48,7 +48,7 @@ def _render_shops_management():
     if action == "View Shops":
         shops = ShopsRepository.get_all_shops()
         if shops:
-            st.dataframe(shops, use_container_width=True)
+            st.dataframe(shops, width="stretch")
         else:
             st.info("No shops found.")
 
@@ -204,7 +204,7 @@ def _render_users_management():
             if role_filter and role_filter != "all":
                 filtered = [u for u in filtered if u.get("role") == role_filter]
 
-            st.dataframe(filtered, use_container_width=True)
+            st.dataframe(filtered, width="stretch")
 
             # export
             import pandas as pd
