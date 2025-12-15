@@ -1,6 +1,6 @@
 # utils/cache_manager.py
 """
-Centralized caching utilities with Redis support for production performance
+Centralized caching utilities with Redis/Upstash support for production performance
 """
 from __future__ import annotations
 
@@ -22,9 +22,16 @@ except ImportError:
     REDIS_AVAILABLE = False
     Redis = None
 
+# Try to import requests for Upstash REST API
+try:
+    import requests
+    REQUESTS_AVAILABLE = True
+except ImportError:
+    REQUESTS_AVAILABLE = False
+
 
 class CacheManager:
-    """Manage application-wide caching with Redis fallback to Streamlit cache"""
+    """Manage application-wide caching with Redis/Upstash fallback to Streamlit cache"""
     
     # Cache TTLs in seconds
     TTL_SHORT = 60           # 1 minute - frequently changing data
@@ -33,10 +40,32 @@ class CacheManager:
     TTL_VERY_LONG = 86400    # 24 hours - rarely changing data
     
     def __init__(self):
-        """Initialize cache manager with Redis if available"""
+        """Initialize cache manager with Redis/Upstash if available"""
         self.redis_client: Optional[Redis] = None
+        self.upstash_rest_url: Optional[str] = None
+        self.upstash_rest_token: Optional[str] = None
         self.use_redis = False
+        self.use_upstash_rest = False
         
+        # Try Upstash REST API first (better for serverless)
+        upstash_url = os.getenv("UPSTASH_REDIS_REST_URL")
+        upstash_token = os.getenv("UPSTASH_REDIS_REST_TOKEN")
+        
+        if upstash_url and upstash_token and REQUESTS_AVAILABLE:
+            try:
+                # Test Upstash REST API
+                headers = {"Authorization": f"Bearer {upstash_token}"}
+                response = requests.get(f"{upstash_url}/ping", headers=headers, timeout=5)
+                if response.status_code == 200:
+                    self.upstash_rest_url = upstash_url
+                    self.upstash_rest_token = upstash_token
+                    self.use_upstash_rest = True
+                    print("✅ Upstash Redis REST API connected successfully")
+                    return
+            except Exception as e:
+                print(f"⚠️ Upstash REST API connection failed: {e}")
+        
+        # Fallback to standard Redis connection
         if REDIS_AVAILABLE:
             redis_url = os.getenv("REDIS_URL") or os.getenv("REDIS_HOST")
             if redis_url:
@@ -76,6 +105,27 @@ class CacheManager:
     
     def get(self, key: str) -> Any:
         """Get value from cache"""
+        # Try Upstash REST API first
+        if self.use_upstash_rest:
+            try:
+                headers = {"Authorization": f"Bearer {self.upstash_rest_token}"}
+                response = requests.get(
+                    f"{self.upstash_rest_url}/get/{key}",
+                    headers=headers,
+                    timeout=3
+                )
+                if response.status_code == 200:
+                    result = response.json().get("result")
+                    if result:
+                        # Upstash stores the value as-is, we need to decode from base64
+                        import base64
+                        # The result is already our base64 encoded pickled data
+                        decoded = base64.b64decode(result)
+                        return pickle.loads(decoded)
+            except Exception as e:
+                print(f"Upstash REST get error: {e}")
+        
+        # Fallback to standard Redis
         if self.use_redis and self.redis_client:
             try:
                 data = self.redis_client.get(key)
@@ -87,6 +137,31 @@ class CacheManager:
     
     def set(self, key: str, value: Any, ttl: int = TTL_MEDIUM):
         """Set value in cache with TTL"""
+        # Try Upstash REST API first
+        if self.use_upstash_rest:
+            try:
+                import base64
+                # Serialize with pickle and encode to base64
+                serialized = pickle.dumps(value)
+                # Upstash REST API needs the data in the request body
+                headers = {
+                    "Authorization": f"Bearer {self.upstash_rest_token}"
+                }
+                # Use SETEX command: /setex/key/seconds/value
+                # Value should be base64 encoded
+                encoded_value = base64.b64encode(serialized).decode('utf-8')
+                
+                response = requests.post(
+                    f"{self.upstash_rest_url}/setex/{key}/{ttl}/{encoded_value}",
+                    headers=headers,
+                    timeout=3
+                )
+                if response.status_code == 200:
+                    return True
+            except Exception as e:
+                print(f"Upstash REST set error: {e}")
+        
+        # Fallback to standard Redis
         if self.use_redis and self.redis_client:
             try:
                 serialized = pickle.dumps(value)
@@ -98,6 +173,17 @@ class CacheManager:
     
     def delete(self, key: str):
         """Delete key from cache"""
+        if self.use_upstash_rest:
+            try:
+                headers = {"Authorization": f"Bearer {self.upstash_rest_token}"}
+                requests.delete(
+                    f"{self.upstash_rest_url}/del/{key}",
+                    headers=headers,
+                    timeout=3
+                )
+            except Exception as e:
+                print(f"Upstash REST delete error: {e}")
+        
         if self.use_redis and self.redis_client:
             try:
                 self.redis_client.delete(key)
@@ -106,6 +192,8 @@ class CacheManager:
     
     def clear_pattern(self, pattern: str):
         """Clear all keys matching pattern (e.g., 'user:*')"""
+        # Note: Upstash REST API doesn't support KEYS command easily
+        # This is mainly for standard Redis
         if self.use_redis and self.redis_client:
             try:
                 keys = self.redis_client.keys(pattern)
@@ -115,8 +203,8 @@ class CacheManager:
                 print(f"Redis clear pattern error: {e}")
     
     def cache_data(self, ttl: int = TTL_MEDIUM, show_spinner: bool = False):
-        """Decorator for caching data with Redis or Streamlit fallback"""
-        if self.use_redis:
+        """Decorator for caching data with Redis/Upstash or Streamlit fallback"""
+        if self.use_upstash_rest or self.use_redis:
             # Use Redis-based caching
             def decorator(func: Callable) -> Callable:
                 @wraps(func)
